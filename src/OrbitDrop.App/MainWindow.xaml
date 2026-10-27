@@ -1,0 +1,100 @@
+<Window x:Class="OrbitDrop.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctrl="clr-namespace:OrbitDrop.App.Controls"
+        xmlns:vm="clr-namespace:OrbitDrop.App.ViewModels"
+        Title="OrbitDrop" Height="640" Width="980"
+        MinHeight="480" MinWidth="720"
+        AllowDrop="True"
+        WindowStartupLocation="CenterScreen"
+        FontSize="13">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="320" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: drop zone + accessible action list -->
+            <DockPanel Grid.Column="0" Margin="20">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,16">
+                    <TextBlock Text="OrbitDrop" FontSize="22" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" VerticalAlignment="Center" />
+                    <TextBlock Text="by b3n3d1ck" Foreground="{StaticResource TextMuted}"
+                               VerticalAlignment="Bottom" Margin="10,0,0,4" />
+                    <Button Content="About" Style="{StaticResource PrimaryButton}" Click="OnAboutClick"
+                            Margin="16,0,0,0" Padding="10,4" />
+                </StackPanel>
+
+                <Border x:Name="DropZone"
+                        Background="{StaticResource Surface}"
+                        BorderBrush="{StaticResource Border}" BorderThickness="1.5"
+                        CornerRadius="14" Padding="24">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Drop a file here"
+                                   FontSize="18" HorizontalAlignment="Center"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <TextBlock Text="or"
+                                   Foreground="{StaticResource TextMuted}"
+                                   HorizontalAlignment="Center" Margin="0,8" />
+                        <Button Content="Pick a file…" Style="{StaticResource PrimaryButton}"
+                                Command="{Binding PickFileCommand}" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding StatusText}" TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextMuted}"
+                                   HorizontalAlignment="Center" Margin="0,20,0,0" MaxWidth="420"
+                                   TextAlignment="Center" />
+
+                        <!-- Accessible list: same actions as the wheel, keyboard/screen-reader friendly -->
+                        <ItemsControl ItemsSource="{Binding Actions}" Margin="0,18,0,0"
+                                      Visibility="{Binding IsWheelOpen, Converter={StaticResource BoolToVis}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Center" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:RadialActionViewModel}">
+                                    <Button Content="{Binding Label}" Style="{StaticResource PrimaryButton}"
+                                            Margin="6"
+                                            Command="{Binding DataContext.InvokeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+
+            <!-- Right: job history -->
+            <DockPanel Grid.Column="1" Margin="0,20,20,20">
+                <TextBlock DockPanel.Dock="Top" Text="Recent jobs" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimary}" Margin="0,0,0,10" />
+                <ListBox ItemsSource="{Binding Jobs}" Background="{StaticResource Surface}"
+                         BorderBrush="{StaticResource Border}" BorderThickness="1"
+                         Foreground="{StaticResource TextPrimary}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="4">
+                                <TextBlock Text="{Binding OperationName}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding InputPath}" Foreground="{StaticResource TextMuted}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Status}" Foreground="{StaticResource TextMuted}" />
+                                <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding Progress}"
+                                             Margin="0,4,0,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Grid>
+
+        <!-- Radial wheel overlay -->
+        <ctrl:RadialMenu x:Name="Wheel"
+                         Visibility="{Binding IsWheelOpen, Converter={StaticResource BoolToVis}}" />
+    </Grid>
+</Window>

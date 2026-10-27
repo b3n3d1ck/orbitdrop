@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- WPF is Windows-only; this project only builds on a Windows runner. -->
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>OrbitDrop.App</RootNamespace>
+    <AssemblyName>OrbitDrop</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon></ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OrbitDrop.Core\OrbitDrop.Core.csproj" />
+    <ProjectReference Include="..\OrbitDrop.Operations.Images\OrbitDrop.Operations.Images.csproj" />
+  </ItemGroup>
+</Project>
