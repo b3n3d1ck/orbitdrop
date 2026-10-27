@@ -5,19 +5,18 @@ a wheel of actions appears, you pick one, and the converted result lands next to
 original without touching it. This repository is the working source, authored by
 [b3n3d1ck](https://github.com/b3n3d1ck).
 
-> **Status: early. Read this before you expect a download.**
+> **Status: early, but building and passing tests on Windows.**
 >
 > What exists today is one complete vertical slice: image convert and resize, driven
 > through the radial menu, with the whole supporting stack (operation model, job queue,
 > safe output, tests, Windows CI) wired up as the template every later feature copies.
 >
-> It was written in an environment that had no .NET SDK and no Windows, so **none of it
-> has been compiled or run by the author yet**. The GitHub Actions workflow on
-> `windows-latest` is the first real build. Until that CI run is green, treat the code as
-> unverified. There is no installer and no release binary yet, so there is nothing to
-> download and nothing to scan. When those exist, their SHA-256 hashes will be published
-> here and any scan result will carry the matching hash. No virus-free claim is made,
-> because none can be made honestly yet.
+> The GitHub Actions workflow on `windows-latest` restores, builds the full solution
+> (WPF app included), runs the test suite, publishes the app, and checksums the executable.
+> All of that is passing. There is **no installer and no release binary yet**, so there is
+> nothing to download and nothing to scan. When those exist, their SHA-256 hashes will be
+> published here and any scan result will carry the matching hash. No virus-free claim is
+> made, because none can be made honestly yet.
 
 ## What works in this slice
 
@@ -31,20 +30,21 @@ without the radial interaction and reachable by keyboard and screen readers.
 
 ## Feature matrix
 
-Honest status. "Implemented (unverified)" means the code is written but has not been run
-by the author; CI is what will move it to verified.
+Honest status. "Builds on CI" means it compiles in the Windows build but has no automated
+test exercising it yet (the UI). "Tested on CI" means a unit/integration test covers it and
+passes on `windows-latest`.
 
 | Area | Status |
 |------|--------|
-| Radial menu (open, keyboard nav, cancel, accessible list) | Implemented (unverified) |
-| Drag-and-drop into the window | Implemented (unverified) |
-| File picker | Implemented (unverified) |
-| Image convert (JPEG / PNG / WebP / BMP / GIF / TIFF) | Implemented (unverified) |
-| Image resize to max dimension (no upscaling) | Implemented (unverified) |
-| Transparency flatten onto chosen background | Implemented (unverified) |
-| Collision-safe output, originals preserved | Implemented + unit tested |
-| Path-traversal guards | Implemented + unit tested |
-| Bounded-concurrency job queue | Implemented + unit tested |
+| Radial menu (open, keyboard nav, cancel, accessible list) | Builds on CI; no UI test yet |
+| Drag-and-drop into the window | Builds on CI; no UI test yet |
+| File picker | Builds on CI; no UI test yet |
+| Image convert (JPEG / PNG / WebP / BMP / GIF / TIFF) | Tested on CI |
+| Image resize to max dimension (no upscaling) | Tested on CI |
+| Transparency flatten onto chosen background | Tested on CI |
+| Collision-safe output, originals preserved | Tested on CI |
+| Path-traversal guards | Tested on CI |
+| Bounded-concurrency job queue | Tested on CI |
 | Image crop (visual editor) | Not started |
 | PDF tools | Not started |
 | Video / audio (FFmpeg) | Not started |
@@ -128,8 +128,8 @@ ship. The determination and the condition under which it would stop holding are 
 
 ## Known limitations
 
-- Nothing is verified by the author yet; CI is the proof, and it has not been run from the
-  authoring environment.
+- The UI (radial menu, drag-and-drop) compiles on CI but has no automated test yet; it has
+  not been click-tested on a desktop. The image engine and core are covered by passing tests.
 - Only the first dropped file is processed in this slice; batch comes with a later one.
 - No installer, no signed binary, no release.
 

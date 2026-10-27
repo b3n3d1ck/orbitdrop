@@ -25,9 +25,13 @@ radial wheel, get a converted file back. Built as the template every later featu
 - GitHub Actions CI on `windows-latest`: restore, build, test, publish, and SHA-256 of the
   published executable.
 
+### Verified
+- Builds the full solution, runs the test suite (39 cases, all passing), publishes the app,
+  and checksums the executable on `windows-latest` GitHub Actions. First green run: push to
+  `main`, workflow "CI".
+
 ### Known gaps (honest status)
-- Authored in an environment without a .NET SDK or Windows, so nothing here has been
-  compiled or run yet. CI is the first real build. See the README feature matrix.
+- UI (radial menu, drag-and-drop) compiles on CI but has no automated test yet.
 - No installer, no code signing, no release artifact yet.
 - PDF, media, OCR, archives, metadata, context-menu integration, and the global drag
   gesture are not implemented in this slice.
