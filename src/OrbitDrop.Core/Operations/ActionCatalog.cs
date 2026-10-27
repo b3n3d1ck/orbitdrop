@@ -4,7 +4,8 @@ namespace OrbitDrop.Core.Operations;
 
 /// <summary>
 /// Builds the concrete wheel choices for a subject. Only actions whose underlying operation
-/// genuinely applies are produced, so the wheel never offers something that will fail.
+/// genuinely applies are produced, so the wheel never offers something that will fail. Labels
+/// are kept short because they sit inside wheel segments.
 /// </summary>
 public static class ActionCatalog
 {
@@ -17,21 +18,20 @@ public static class ActionCatalog
 
         foreach (var op in registry.GetApplicable(subject))
         {
-            if (op.Id == "image.convert")
+            switch (op.Id)
             {
-                actions.Add(Convert(op, "Convert to JPEG", "jpg"));
-                actions.Add(Convert(op, "Convert to PNG", "png"));
-                actions.Add(Convert(op, "Convert to WebP", "webp"));
-                actions.Add(new RadialAction
-                {
-                    Label = "Resize to 1080px",
-                    Operation = op,
-                    Parameters = new Dictionary<string, object?>
-                    {
-                        ["format"] = subject.Extension is "jpg" or "jpeg" ? "jpg" : "png",
-                        ["maxDimension"] = 1080,
-                    },
-                });
+                case "image.convert":
+                    actions.Add(Convert(op, "JPEG", "jpg"));
+                    actions.Add(Convert(op, "PNG", "png"));
+                    actions.Add(Convert(op, "WebP", "webp"));
+                    actions.Add(Convert(op, "BMP", "bmp"));
+                    actions.Add(Convert(op, "GIF", "gif"));
+                    actions.Add(Convert(op, "TIFF", "tiff"));
+                    break;
+
+                case "image.to-pdf":
+                    actions.Add(new RadialAction { Label = "PDF", Operation = op });
+                    break;
             }
         }
 

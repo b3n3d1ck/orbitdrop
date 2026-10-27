@@ -14,94 +14,118 @@ public class RadialLayoutTests
     }
 
     [Fact]
-    public void SegmentCenter_FirstSegment_IsAtTop()
+    public void OuterRadius_FitsInsideBox_AndIsNonNegative()
     {
-        // index 0 of 4 starts at 12 o'clock: same X as centre, radius above it.
-        var p = RadialLayout.SegmentCenter(400, 400, index: 0, count: 4, radius: 100);
-        Assert.Equal(200, p.X, 3);
-        Assert.Equal(100, p.Y, 3);
+        Assert.Equal(200 - 14, RadialLayout.OuterRadius(600, 400), 3); // min(600,400)/2 - margin
+        Assert.Equal(0, RadialLayout.OuterRadius(10, 10)); // margin larger than half -> clamped to 0
     }
 
     [Fact]
-    public void SegmentCenter_ThirdOfFour_IsAtBottom()
+    public void InnerRadius_IsSmallerThanOuter()
     {
-        var p = RadialLayout.SegmentCenter(400, 400, index: 2, count: 4, radius: 100);
-        Assert.Equal(200, p.X, 3);
-        Assert.Equal(300, p.Y, 3);
+        var outer = RadialLayout.OuterRadius(800, 600);
+        var inner = RadialLayout.InnerRadius(outer);
+        Assert.True(inner > 0 && inner < outer, $"inner={inner}, outer={outer}");
     }
 
     [Fact]
-    public void SegmentCenter_AllSegmentsLieOnTheCircle()
+    public void SegmentAngles_StartAtTop_AndTileTheCircle()
     {
-        const double r = 120;
-        var center = RadialLayout.Center(500, 500);
+        const int count = 7;
+        var span = 2 * Math.PI / count;
+
+        var (firstStart, firstEnd) = RadialLayout.SegmentAngles(0, count);
+        Assert.Equal(RadialLayout.TopRad, firstStart, 9);
+        Assert.Equal(RadialLayout.TopRad + span, firstEnd, 9);
+
+        // Each segment begins exactly where the previous ended; total coverage is the full circle.
+        double total = 0;
+        double prevEnd = firstStart;
+        for (var i = 0; i < count; i++)
+        {
+            var (s, e) = RadialLayout.SegmentAngles(i, count);
+            Assert.Equal(prevEnd, s, 9);
+            total += e - s;
+            prevEnd = e;
+        }
+        Assert.Equal(2 * Math.PI, total, 9);
+    }
+
+    [Theory]
+    [InlineData(-1, 4)]
+    [InlineData(4, 4)]
+    [InlineData(5, 4)]
+    [InlineData(0, 0)]
+    public void SegmentAngles_RejectsBadIndexOrCount(int index, int count)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => RadialLayout.SegmentAngles(index, count));
+    }
+
+    [Fact]
+    public void PointOnCircle_IsAtTheGivenRadius()
+    {
+        var center = new LayoutPoint(100, 100);
+        var p = RadialLayout.PointOnCircle(center, 50, 0); // 0 rad = +x
+        Assert.Equal(150, p.X, 6);
+        Assert.Equal(100, p.Y, 6);
+    }
+
+    [Fact]
+    public void LabelPoint_SitsBetweenTheTwoRings()
+    {
+        const double w = 500, h = 500, inner = 80, outer = 200;
+        var center = RadialLayout.Center(w, h);
         for (var i = 0; i < 6; i++)
         {
-            var p = RadialLayout.SegmentCenter(500, 500, i, 6, r);
+            var p = RadialLayout.LabelPoint(w, h, i, 6, inner, outer);
             var dist = Math.Sqrt(Math.Pow(p.X - center.X, 2) + Math.Pow(p.Y - center.Y, 2));
-            Assert.Equal(r, dist, 3);
+            Assert.Equal((inner + outer) / 2, dist, 6);
         }
     }
 
-    [Theory]
-    [InlineData(-1, 4)]  // negative index
-    [InlineData(4, 4)]   // index == count (out of range)
-    [InlineData(5, 4)]   // index > count
-    [InlineData(0, 0)]   // non-positive count
-    public void SegmentCenter_RejectsBadIndexOrCount(int index, int count)
+    [Fact]
+    public void HitTest_CentreHole_IsCancel()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(
-            () => RadialLayout.SegmentCenter(400, 400, index, count, 100));
-    }
-
-    [Theory]
-    [InlineData(0, 0)]
-    [InlineData(-5, 100)]
-    [InlineData(100, -5)]
-    public void FitRadius_DegenerateBox_IsZero(double w, double h)
-    {
-        Assert.Equal(0, RadialLayout.FitRadius(w, h, 80, 23));
+        var hit = RadialLayout.HitTest(400, 400, innerRadius: 80, outerRadius: 180, count: 6,
+            point: new LayoutPoint(200, 200));
+        Assert.Equal(WheelRegion.Hole, hit.Region);
     }
 
     [Fact]
-    public void FitRadius_NeverExceedsTheBoundingCaps()
+    public void HitTest_OutsideOuterRadius_IsOutside()
     {
-        const double halfW = 80, halfH = 23, margin = 8;
-        foreach (var (w, h) in new[] { (400d, 300d), (720d, 480d), (980d, 640d), (1920d, 1080d) })
+        var hit = RadialLayout.HitTest(400, 400, 80, 180, 6, new LayoutPoint(395, 200));
+        Assert.Equal(WheelRegion.Outside, hit.Region);
+    }
+
+    [Fact]
+    public void HitTest_TopOfRing_IsFirstSegment()
+    {
+        // Straight up from centre, between the rings, lands in segment 0 (which starts at the top).
+        var hit = RadialLayout.HitTest(400, 400, 80, 180, 6, new LayoutPoint(200, 200 - 130));
+        Assert.Equal(WheelRegion.Segment, hit.Region);
+        Assert.Equal(0, hit.Index);
+    }
+
+    [Fact]
+    public void HitTest_EverySegmentIsReachable_AndIndicesAreUnique()
+    {
+        const double w = 400, h = 400, inner = 80, outer = 180;
+        const int count = 7;
+        var mid = (inner + outer) / 2;
+        var seen = new HashSet<int>();
+
+        for (var i = 0; i < count; i++)
         {
-            var r = RadialLayout.FitRadius(w, h, halfW, halfH, margin: margin);
-            Assert.True(r <= w / 2 - halfW - margin + 1e-9, $"radius {r} too wide for {w}x{h}");
-            Assert.True(r <= h / 2 - halfH - margin + 1e-9, $"radius {r} too tall for {w}x{h}");
-            Assert.True(r >= 0);
+            var (s, e) = RadialLayout.SegmentAngles(i, count);
+            var angle = (s + e) / 2;
+            var p = RadialLayout.PointOnCircle(RadialLayout.Center(w, h), mid, angle);
+            var hit = RadialLayout.HitTest(w, h, inner, outer, count, p);
+            Assert.Equal(WheelRegion.Segment, hit.Region);
+            Assert.Equal(i, hit.Index);
+            Assert.True(seen.Add(hit.Index), $"segment {i} collided with another");
         }
-    }
 
-    [Fact]
-    public void FitRadius_KeepsEverySegmentFullyInsideTheWindow()
-    {
-        const double halfW = 80, halfH = 23;
-        foreach (var (w, h) in new[] { (400d, 300d), (720d, 480d), (980d, 640d), (1920d, 1080d) })
-        {
-            var r = RadialLayout.FitRadius(w, h, halfW, halfH);
-            for (var count = 1; count <= 8; count++)
-            {
-                for (var i = 0; i < count; i++)
-                {
-                    var c = RadialLayout.SegmentCenter(w, h, i, count, r);
-                    Assert.True(c.X - halfW >= -1e-9, "segment left edge off-screen");
-                    Assert.True(c.X + halfW <= w + 1e-9, "segment right edge off-screen");
-                    Assert.True(c.Y - halfH >= -1e-9, "segment top edge off-screen");
-                    Assert.True(c.Y + halfH <= h + 1e-9, "segment bottom edge off-screen");
-                }
-            }
-        }
-    }
-
-    [Fact]
-    public void FitRadius_GrowsWithWindowSize()
-    {
-        var small = RadialLayout.FitRadius(600, 400, 80, 23);
-        var large = RadialLayout.FitRadius(1200, 800, 80, 23);
-        Assert.True(large > small, $"expected radius to grow: small={small}, large={large}");
+        Assert.Equal(count, seen.Count);
     }
 }

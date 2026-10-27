@@ -10,7 +10,7 @@ namespace OrbitDrop.Core.Files;
 public static class FileClassifier
 {
     private static readonly HashSet<string> ImageExt = new(StringComparer.OrdinalIgnoreCase)
-    { "jpg", "jpeg", "png", "webp", "bmp", "tiff", "tif", "gif", "ico" };
+    { "jpg", "jpeg", "jfif", "png", "webp", "bmp", "tiff", "tif", "gif", "ico" };
 
     private static readonly HashSet<string> VideoExt = new(StringComparer.OrdinalIgnoreCase)
     { "mp4", "mov", "mkv", "webm", "avi" };

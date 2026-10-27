@@ -1,62 +1,61 @@
 using OrbitDrop.Core.Files;
 using OrbitDrop.Core.Operations;
 using OrbitDrop.Operations.Images;
+using OrbitDrop.Operations.Pdf;
 using Xunit;
 
 namespace OrbitDrop.Tests;
 
 public class ActionCatalogTests
 {
-    private static IOperationRegistry RegistryWithImages()
+    private static IOperationRegistry FullRegistry()
     {
         var registry = new OperationRegistry();
         registry.Register(new ImageConvertOperation());
+        registry.Register(new ImageToPdfOperation());
         return registry;
     }
 
     [Fact]
-    public void ImageSubject_ProducesTheExpectedActions()
+    public void ImageSubject_ProducesFormatWedgesAndPdf()
     {
-        var actions = ActionCatalog.ForSubject(new FileSubject("/x/photo.png"), RegistryWithImages());
+        var actions = ActionCatalog.ForSubject(new FileSubject("/x/photo.png"), FullRegistry());
 
         Assert.Equal(
-            new[] { "Convert to JPEG", "Convert to PNG", "Convert to WebP", "Resize to 1080px" },
+            new[] { "JPEG", "PNG", "WebP", "BMP", "GIF", "TIFF", "PDF" },
             actions.Select(a => a.Label).ToArray());
     }
 
     [Fact]
     public void ConvertActions_CarryTheRightFormatParameter()
     {
-        var actions = ActionCatalog.ForSubject(new FileSubject("/x/photo.png"), RegistryWithImages());
+        var actions = ActionCatalog.ForSubject(new FileSubject("/x/photo.png"), FullRegistry());
 
-        Assert.Equal("jpg", FormatOf(actions, "Convert to JPEG"));
-        Assert.Equal("png", FormatOf(actions, "Convert to PNG"));
-        Assert.Equal("webp", FormatOf(actions, "Convert to WebP"));
+        Assert.Equal("jpg", FormatOf(actions, "JPEG"));
+        Assert.Equal("webp", FormatOf(actions, "WebP"));
+        Assert.Equal("tiff", FormatOf(actions, "TIFF"));
     }
 
     [Fact]
-    public void Resize_KeepsJpegSourceAsJpeg_AndCapsDimension()
+    public void PdfAction_UsesTheImageToPdfOperation()
     {
-        var actions = ActionCatalog.ForSubject(new FileSubject("/x/photo.jpg"), RegistryWithImages());
-        var resize = actions.Single(a => a.Label == "Resize to 1080px");
-
-        Assert.Equal("jpg", resize.Parameters["format"]);
-        Assert.Equal(1080, resize.Parameters["maxDimension"]);
+        var actions = ActionCatalog.ForSubject(new FileSubject("/x/photo.png"), FullRegistry());
+        var pdf = actions.Single(a => a.Label == "PDF");
+        Assert.Equal("image.to-pdf", pdf.Operation.Id);
     }
 
     [Fact]
-    public void Resize_DefaultsNonJpegSourceToPng()
+    public void JfifIsTreatedAsAnImage()
     {
-        var actions = ActionCatalog.ForSubject(new FileSubject("/x/image.webp"), RegistryWithImages());
-        var resize = actions.Single(a => a.Label == "Resize to 1080px");
-
-        Assert.Equal("png", resize.Parameters["format"]);
+        var actions = ActionCatalog.ForSubject(new FileSubject("/x/scan.jfif"), FullRegistry());
+        Assert.Contains(actions, a => a.Label == "PDF");
+        Assert.Contains(actions, a => a.Label == "JPEG");
     }
 
     [Fact]
     public void NonImageSubject_ProducesNoActions()
     {
-        var actions = ActionCatalog.ForSubject(new FileSubject("/x/notes.txt"), RegistryWithImages());
+        var actions = ActionCatalog.ForSubject(new FileSubject("/x/notes.txt"), FullRegistry());
         Assert.Empty(actions);
     }
 

@@ -7,6 +7,7 @@ using OrbitDrop.Core.Files;
 using OrbitDrop.Core.Jobs;
 using OrbitDrop.Core.Operations;
 using OrbitDrop.Operations.Images;
+using OrbitDrop.Operations.Pdf;
 
 namespace OrbitDrop.App.ViewModels;
 
@@ -23,6 +24,7 @@ public sealed partial class MainViewModel : ObservableObject
     {
         // Compose the operations available in this slice. More engines register here later.
         _registry.Register(new ImageConvertOperation());
+        _registry.Register(new ImageToPdfOperation());
     }
 
     public ObservableCollection<RadialActionViewModel> Actions { get; } = new();

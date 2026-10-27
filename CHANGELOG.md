@@ -3,7 +3,24 @@
 All notable changes are recorded here. Format loosely follows Keep a Changelog;
 versions follow SemVer.
 
-## [Unreleased] — 0.1.0 vertical slice
+## [Unreleased]
+
+### Added — pie wheel + PDF output
+- Redesigned the action menu as a drawn pie/donut wheel: annular-sector segments, a centre
+  hole that previews the dropped image and acts as Cancel, mouse hover, keyboard navigation,
+  and click-away to dismiss. Replaced the rectangular-button control. Segment geometry and
+  pointer hit-testing live in `OrbitDrop.Core.Ui.RadialLayout` and are unit-tested.
+- `OrbitDrop.Operations.Pdf`: image → single-page PDF (A4 fit), written by a first-party
+  minimal PDF writer that embeds the image as JPEG via `DCTDecode`. No PDF-library dependency
+  (PDFsharp is AGPL; avoided deliberately). Tests validate the structure and the byte-accurate
+  xref table.
+- Recognise `.jfif` as an image. The image wheel now offers JPEG, PNG, WebP, BMP, GIF, TIFF, PDF.
+
+### Fixed
+- Radial menu segments no longer stack in the top-left corner (moved off the one-shot Canvas
+  layout). ProgressBar binding storm fixed (OneWay) with a dialog-storm guard.
+
+## [0.1.0 vertical slice]
 
 First end-to-end path through the whole stack: drop an image, pick an action on the
 radial wheel, get a converted file back. Built as the template every later feature copies.

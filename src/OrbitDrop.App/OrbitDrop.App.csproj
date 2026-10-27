@@ -16,5 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\OrbitDrop.Core\OrbitDrop.Core.csproj" />
     <ProjectReference Include="..\OrbitDrop.Operations.Images\OrbitDrop.Operations.Images.csproj" />
+    <ProjectReference Include="..\OrbitDrop.Operations.Pdf\OrbitDrop.Operations.Pdf.csproj" />
   </ItemGroup>
 </Project>

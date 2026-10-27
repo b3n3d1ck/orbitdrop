@@ -97,7 +97,7 @@
         </Grid>
 
         <!-- Radial wheel overlay -->
-        <ctrl:RadialMenu x:Name="Wheel"
-                         Visibility="{Binding IsWheelOpen, Converter={StaticResource BoolToVis}}" />
+        <ctrl:RadialWheel x:Name="Wheel"
+                          Visibility="{Binding IsWheelOpen, Converter={StaticResource BoolToVis}}" />
     </Grid>
 </Window>

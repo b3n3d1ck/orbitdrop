@@ -36,17 +36,18 @@ passes on `windows-latest`.
 
 | Area | Status |
 |------|--------|
-| Radial menu (open, keyboard nav, cancel, accessible list) | Builds on CI; no UI test yet |
+| Pie-wheel menu placement + pointer hit-testing | Tested on CI (geometry unit-tested) |
+| Radial wheel rendering, keyboard nav, centre preview | Builds on CI; visuals pending manual retest |
 | Drag-and-drop into the window | Builds on CI; no UI test yet |
 | File picker | Builds on CI; no UI test yet |
 | Image convert (JPEG / PNG / WebP / BMP / GIF / TIFF) | Tested on CI |
-| Image resize to max dimension (no upscaling) | Tested on CI |
+| Image → PDF (single page, A4 fit) | Tested on CI |
 | Transparency flatten onto chosen background | Tested on CI |
 | Collision-safe output, originals preserved | Tested on CI |
 | Path-traversal guards | Tested on CI |
 | Bounded-concurrency job queue | Tested on CI |
 | Image crop (visual editor) | Not started |
-| PDF tools | Not started |
+| PDF as input (PDF → image, merge, split, text) | Not started |
 | Video / audio (FFmpeg) | Not started |
 | OCR | Not started |
 | Archives | Not started |
@@ -57,8 +58,8 @@ passes on `windows-latest`.
 
 ## Supported image formats (this slice)
 
-Read: JPEG, PNG, WebP, BMP, TIFF, GIF, ICO (whatever ImageSharp decodes).
-Write: JPEG, PNG, WebP, BMP, GIF, TIFF.
+Read: JPEG, PNG, WebP, BMP, TIFF, GIF, ICO, JFIF (whatever ImageSharp decodes).
+Write: JPEG, PNG, WebP, BMP, GIF, TIFF, and PDF (one image per page).
 
 HEIC, AVIF, RAW, and friends are deliberately absent until an engine that genuinely
 supports them is added and tested. The wheel never offers a conversion it cannot perform.
@@ -67,11 +68,12 @@ supports them is added and tested. The wheel never offers a conversion it cannot
 
 ```
 src/
-  OrbitDrop.Core/              operation model, job queue, safe IO, file classification
+  OrbitDrop.Core/              operation model, job queue, safe IO, wheel geometry
   OrbitDrop.Operations.Images/ the ImageSharp-backed convert/resize operation
-  OrbitDrop.App/               WPF shell, radial menu control, view models
+  OrbitDrop.Operations.Pdf/    image → PDF (first-party minimal PDF writer, no PDF library)
+  OrbitDrop.App/               WPF shell, pie-wheel control, view models
 tests/
-  OrbitDrop.Tests/             xUnit suite for Core + Images
+  OrbitDrop.Tests/             xUnit suite for Core + Images + Pdf
 .github/workflows/ci.yml       Windows build + test + publish
 docs/DEPENDENCIES.md           dependency and license inventory
 ```

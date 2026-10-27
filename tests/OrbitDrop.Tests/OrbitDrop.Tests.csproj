@@ -18,5 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\OrbitDrop.Core\OrbitDrop.Core.csproj" />
     <ProjectReference Include="..\..\src\OrbitDrop.Operations.Images\OrbitDrop.Operations.Images.csproj" />
+    <ProjectReference Include="..\..\src\OrbitDrop.Operations.Pdf\OrbitDrop.Operations.Pdf.csproj" />
   </ItemGroup>
 </Project>

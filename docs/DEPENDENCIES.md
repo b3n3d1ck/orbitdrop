@@ -30,6 +30,15 @@ recorded in [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md).
 The one standing obligation: keep that determination accurate. If OrbitDrop's own license
 ever changes, re-check the Split License terms before shipping a binary.
 
+## PDF generation is first-party (no dependency)
+
+Image → PDF is produced by our own code (`OrbitDrop.Operations.Pdf/MinimalPdf.cs`), which writes
+a minimal PDF embedding the image as a JPEG via the standard `DCTDecode` filter. This was a
+deliberate choice: the common managed PDF libraries are not clean fits for an MIT project —
+PDFsharp 6.x is AGPL-3.0-only (strong copyleft) and QuestPDF's community license is
+revenue-gated. Writing the one-image PDF ourselves adds no runtime dependency and no new license
+obligation. ImageSharp is used only to encode the embedded JPEG (already a dependency).
+
 ## Planned dependencies (not yet added)
 
 These belong to later slices and are listed so the licensing homework is visible early:
