@@ -7,7 +7,6 @@
     <RootNamespace>OrbitDrop.App</RootNamespace>
     <AssemblyName>OrbitDrop</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon></ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

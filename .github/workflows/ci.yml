@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
     # WPF requires Windows; the whole solution builds here.
@@ -27,7 +31,7 @@ jobs:
       - name: Restore
         run: dotnet restore OrbitDrop.sln
 
-      - name: Format check (advisory)
+      - name: Format check (advisory, never blocks)
         run: dotnet format OrbitDrop.sln --verify-no-changes --severity warn
         continue-on-error: true
 
@@ -41,6 +45,8 @@ jobs:
           --logger "trx;LogFileName=test-results.trx"
           --results-directory ${{ github.workspace }}/test-results
 
+      # Diagnostic artifact: uploaded even on failure so a red build is debuggable.
+      # This is not the distributable; those steps below are gated on success.
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -49,19 +55,22 @@ jobs:
           path: test-results/**/*.trx
 
       - name: Publish app (framework-dependent, win-x64)
+        if: success()
         run: >
           dotnet publish src/OrbitDrop.App/OrbitDrop.App.csproj
           -c Release -r win-x64 --self-contained false
           -o publish
 
       - name: Compute SHA-256 of published executable
+        if: success()
         shell: pwsh
         run: |
-          Get-FileHash publish/OrbitDrop.exe -Algorithm SHA256 |
-            Format-List | Out-File -FilePath publish/SHA256.txt -Encoding utf8
-          Get-Content publish/SHA256.txt
+          $hash = Get-FileHash publish/OrbitDrop.exe -Algorithm SHA256
+          "$($hash.Hash)  OrbitDrop.exe" | Out-File -FilePath publish/SHA256SUMS.txt -Encoding ascii
+          Get-Content publish/SHA256SUMS.txt
 
       - name: Upload app artifact
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: orbitdrop-win-x64

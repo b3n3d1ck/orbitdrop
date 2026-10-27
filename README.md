@@ -120,9 +120,11 @@ input (filenames, file bytes, future archive entries) is treated as hostile; see
 ## Dependencies and licensing
 
 The application is MIT-licensed. It depends on ImageSharp, whose v3 ships under the Six
-Labors Split License rather than a plain permissive one. That has real consequences for
-binary distribution, and it is spelled out in [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md).
-Binary releases are blocked until that determination is recorded.
+Labors Split License rather than a plain permissive one. Because OrbitDrop is itself
+open source (MIT), that license grants ImageSharp under Apache-2.0 terms, so binaries can
+ship. The determination and the condition under which it would stop holding are recorded in
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); the full inventory is in
+[docs/DEPENDENCIES.md](docs/DEPENDENCIES.md).
 
 ## Known limitations
 

@@ -13,26 +13,22 @@ are added; new dependencies get a row here in the same pull request that introdu
 | xunit.runner.visualstudio | 2.8.2 | Test runner adapter | Apache-2.0 | No (test-only) | |
 | coverlet.collector | 6.0.2 | Code coverage | MIT | No (test-only) | |
 
-## The ImageSharp licensing note (read before shipping)
+## The ImageSharp licensing note — resolved
 
-ImageSharp v2 was Apache-2.0. Starting with v3 (what this project uses), Six Labors
-ships it under the **Six Labors Split License**. In short: it is free to use for
-open-source projects and for organizations under a revenue threshold, but a commercial
-license is required otherwise. OrbitDrop is MIT-licensed open source, which is the case
-the split license is meant to allow — but "open source" is not an automatic pass, and
-the terms are the authority, not this paragraph.
+ImageSharp v2 was Apache-2.0. Starting with v3 (what this project uses), Six Labors ships
+it under the **Six Labors Split License v1.0**, a dual license. Its text grants the
+component under Apache-2.0 when the consuming software is "licensed under an Open Source or
+Source Available license," and falls back to a paid commercial license otherwise (with
+revenue-threshold and nonprofit carve-outs).
 
-Before cutting a public binary release, do one of:
+**Determination (2026-10-27):** OrbitDrop is MIT-licensed, which is an Open Source license,
+so it consumes ImageSharp under the Split License's Apache-2.0 grant, royalty-free, and may
+redistribute it. Binary releases are **not** blocked on this. The full determination,
+including the condition under which it stops holding (OrbitDrop going closed-source), is
+recorded in [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md).
 
-1. Confirm the project qualifies under the current Six Labors Split License, and keep a
-   dated note of that determination in the release checklist; or
-2. Buy a Six Labors commercial license; or
-3. Replace ImageSharp with an engine whose redistribution terms are unambiguous for this
-   use (for example a native library wrapper under a permissive or LGPL license, with the
-   LGPL dynamic-linking obligations handled).
-
-Until that decision is recorded, treat binary releases as blocked. The source builds and
-tests regardless.
+The one standing obligation: keep that determination accurate. If OrbitDrop's own license
+ever changes, re-check the Split License terms before shipping a binary.
 
 ## Planned dependencies (not yet added)
 
