@@ -1,8 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <!-- Cross-platform on purpose: core logic must build and be tested on any
-         runner, independent of the Windows-only WPF layer. -->
-    <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>OrbitDrop.Core</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 </Project>

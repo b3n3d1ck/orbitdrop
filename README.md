@@ -1,141 +1,77 @@
-# OrbitDrop
+<h1 align="center">Flickwheel</h1>
+<p align="center"><b>Your files. Your flow.</b><br>Convert, edit, and manage files from a radial menu, without opening a separate app. Windows 10 (19041+) and 11.</p>
 
-OrbitDrop is a Windows file utility built around a radial action menu. You drop a file,
-a wheel of actions appears, you pick one, and the converted result lands next to the
-original without touching it. This repository is the working source, authored by
-[b3n3d1ck](https://github.com/b3n3d1ck).
+<p align="center"><sub>Flickwheel is a fork of <a href="https://github.com/i3sam/OrbitDrop">OrbitDrop</a> by Mohammed Essam, used under the MIT License. Maintained by <a href="https://github.com/b3n3d1ck">b3n3d1ck</a>. Not affiliated with or endorsed by the original project.</sub></p>
 
-> **Status: early, but building and passing tests on Windows.**
+---
+
+> **Status: adopting the upstream codebase. Building on CI; not yet released.**
 >
-> What exists today is one complete vertical slice: image convert and resize, driven
-> through the radial menu, with the whole supporting stack (operation model, job queue,
-> safe output, tests, Windows CI) wired up as the template every later feature copies.
->
-> The GitHub Actions workflow on `windows-latest` restores, builds the full solution
-> (WPF app included), runs the test suite, publishes the app, and checksums the executable.
-> All of that is passing. There is **no installer and no release binary yet**, so there is
-> nothing to download and nothing to scan. When those exist, their SHA-256 hashes will be
-> published here and any scan result will carry the matching hash. No virus-free claim is
-> made, because none can be made honestly yet.
+> This repository was just re-based onto the OrbitDrop source as its technical foundation. The
+> product is being rebranded to Flickwheel with its own identity. There is **no release yet**, so
+> there is nothing to download and no installer to run. Download links will appear here only when a
+> real GitHub Release exists, with SHA-256 checksums. No "virus-free" or VirusTotal claim is made,
+> because none can be made honestly yet.
 
-## What works in this slice
+## What it is
 
-Drop a PNG (or any supported image) onto the window. The wheel offers convert-to-JPEG,
-convert-to-PNG, convert-to-WebP, and resize-to-1080px. Pick one with the mouse or the
-keyboard. The file is written with a collision-safe name in the same folder, and the job
-shows up in the history panel with its progress and outcome.
+Flickwheel puts a context-aware radial wheel at your pointer. Drag a file and tap a key, or select
+files and press a shortcut: the wheel opens with the actions that actually apply to those files.
+The result is written **next to the original**, which is never changed, and recent results can be
+undone. There is no main window — it lives in the notification area and appears when you summon it.
 
-The same actions appear as a plain button list beside the wheel, so the feature is usable
-without the radial interaction and reachable by keyboard and screen readers.
+## Features (inherited from upstream, being verified on this fork)
 
-## Feature matrix
+These come from the OrbitDrop codebase and build on CI. Each is marked honestly as it is verified on
+Flickwheel's own pipeline; nothing here is claimed as hand-tested until it has been run on Windows.
 
-Honest status. "Builds on CI" means it compiles in the Windows build but has no automated
-test exercising it yet (the UI). "Tested on CI" means a unit/integration test covers it and
-passes on `windows-latest`.
+- Image convert between PNG, JPEG, WebP, BMP, TIFF, GIF (via Windows Imaging Component + SkiaSharp), SVG rasterisation.
+- Resize, crop, rotate, flip, compress, and target-size reduction, with transparency handling.
+- Image → PDF, plus PDF merge/split/rotate/compress (PDFsharp 6.2.4, the last MIT release).
+- Video/audio transcode via Windows Media Foundation.
+- CorelDRAW (.cdr/.cmx) reading via a bundled native reader (libcdr).
+- Batch processing with a job queue, progress, cancellation, and completion notifications.
+- File actions, right-click Explorer integration, tray menu, onboarding guide, light/dark themes.
 
-| Area | Status |
-|------|--------|
-| Pie-wheel menu placement + pointer hit-testing | Tested on CI (geometry unit-tested) |
-| Radial wheel rendering, keyboard nav, centre preview | Builds on CI; visuals pending manual retest |
-| Drag-and-drop into the window | Builds on CI; no UI test yet |
-| File picker | Builds on CI; no UI test yet |
-| Image convert (JPEG / PNG / WebP / BMP / GIF / TIFF) | Tested on CI |
-| Image → PDF (single page, A4 fit) | Tested on CI |
-| Transparency flatten onto chosen background | Tested on CI |
-| Collision-safe output, originals preserved | Tested on CI |
-| Path-traversal guards | Tested on CI |
-| Bounded-concurrency job queue | Tested on CI |
-| Image crop (visual editor) | Not started |
-| PDF as input (PDF → image, merge, split, text) | Not started |
-| Video / audio (FFmpeg) | Not started |
-| OCR | Not started |
-| Archives | Not started |
-| Metadata viewer / stripping | Not started |
-| Global drag gesture, context-menu entry, tray | Not started |
-| Installer (WiX) | Not started |
-| Code signing, release pipeline | Not started |
+## Architecture
 
-## Supported image formats (this slice)
+.NET 10 + WPF, Windows-only (`net10.0-windows10.0.19041.0`). Managed projects under `src/`
+(`OrbitDrop.Core`, `.Jobs`, `.Conversion`, `.Tools`, `.Infrastructure`, `.UI`, `.Windows`, `.App`),
+a native C++ CorelDRAW reader under `src/OrbitDrop.CdrReader`, tests under `tests/`. Internal
+assembly and namespace names remain `OrbitDrop.*` to preserve attribution and keep WPF resource URIs
+intact; the user-facing product is Flickwheel.
 
-Read: JPEG, PNG, WebP, BMP, TIFF, GIF, ICO, JFIF (whatever ImageSharp decodes).
-Write: JPEG, PNG, WebP, BMP, GIF, TIFF, and PDF (one image per page).
+## Build and test
 
-HEIC, AVIF, RAW, and friends are deliberately absent until an engine that genuinely
-supports them is added and tested. The wheel never offers a conversion it cannot perform.
-
-## Project layout
-
-```
-src/
-  OrbitDrop.Core/              operation model, job queue, safe IO, wheel geometry
-  OrbitDrop.Operations.Images/ the ImageSharp-backed convert/resize operation
-  OrbitDrop.Operations.Pdf/    image → PDF (first-party minimal PDF writer, no PDF library)
-  OrbitDrop.App/               WPF shell, pie-wheel control, view models
-tests/
-  OrbitDrop.Tests/             xUnit suite for Core + Images + Pdf
-.github/workflows/ci.yml       Windows build + test + publish
-docs/DEPENDENCIES.md           dependency and license inventory
-```
-
-`Core` and `Operations.Images` target `net8.0` on purpose, so their logic builds and tests
-on any runner. Only `OrbitDrop.App` is Windows-only, because WPF is.
-
-## Build from source
-
-You need the .NET 8 SDK. On Windows:
+Requires the .NET 10 SDK on Windows.
 
 ```powershell
-dotnet restore OrbitDrop.sln
-dotnet build OrbitDrop.sln -c Release
-dotnet test tests/OrbitDrop.Tests/OrbitDrop.Tests.csproj -c Release
-dotnet run --project src/OrbitDrop.App/OrbitDrop.App.csproj
+dotnet build OrbitDrop.slnx -c Release
+dotnet test tests/OrbitDrop.Tests -c Release
 ```
 
-On Linux or macOS you can still build and test the core libraries (the `OrbitDrop.App`
-project will not build off Windows, which is expected):
-
-```bash
-dotnet build src/OrbitDrop.Core/OrbitDrop.Core.csproj
-dotnet test tests/OrbitDrop.Tests/OrbitDrop.Tests.csproj
-```
-
-## How a conversion flows through the code
-
-1. A dropped path becomes a `FileSubject`, classified by extension.
-2. `OperationRegistry.GetApplicable` returns only the operations whose `CanApplyTo` is true.
-3. `ActionCatalog` turns those into concrete wheel choices with preset parameters.
-4. Picking one builds a `Job` (via `JobFactory`, which wires progress) and hands it to the
-   `JobQueue`.
-5. `ImageConvertOperation` loads the image, resizes if asked (never upscaling), flattens
-   transparency when the target has no alpha, writes to a temp file, then moves it into
-   place under a non-colliding name.
-6. The job reaches `Succeeded` or `Failed`, and the UI reports it plainly.
+The native CorelDRAW reader and the installer are produced by the scripts in `build/` and are only
+needed for a packaged release, not for building or testing the app.
 
 ## Privacy and security
 
-No telemetry. No accounts. No network calls from the app itself, except opening a link in
-your browser when you click one. Your originals are never overwritten by default. Untrusted
-input (filenames, file bytes, future archive entries) is treated as hostile; see
-[SECURITY.md](SECURITY.md) for the threat model and how to report an issue.
+Processing is local. No telemetry, no accounts, no file uploads. See [SECURITY.md](SECURITY.md) once
+added for the reporting process. One upstream behaviour is being reviewed for this fork: the update
+checker must be retargeted or disabled so it never contacts the original project's release feed — this
+is tracked as a release gate below.
 
-## Dependencies and licensing
+## Attribution and licensing
 
-The application is MIT-licensed. It depends on ImageSharp, whose v3 ships under the Six
-Labors Split License rather than a plain permissive one. Because OrbitDrop is itself
-open source (MIT), that license grants ImageSharp under Apache-2.0 terms, so binaries can
-ship. The determination and the condition under which it would stop holding are recorded in
-[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); the full inventory is in
-[docs/DEPENDENCIES.md](docs/DEPENDENCIES.md).
+Flickwheel is MIT-licensed. It is based on **OrbitDrop by Mohammed Essam** (MIT, © 2026), whose
+copyright and license are preserved in [LICENSE](LICENSE). The full dependency inventory and the
+upstream acknowledgement are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Modifications for
+Flickwheel are © 2026 b3n3d1ck.
 
-## Known limitations
+## Known limitations / release gates
 
-- The UI (radial menu, drag-and-drop) compiles on CI but has no automated test yet; it has
-  not been click-tested on a desktop. The image engine and core are covered by passing tests.
-- Only the first dropped file is processed in this slice; batch comes with a later one.
-- No installer, no signed binary, no release.
-
-## Attribution
-
-OrbitDrop by [b3n3d1ck](https://github.com/b3n3d1ck). Contributions and bug reports are
-welcome through the repository.
+- No release, installer, or portable package yet.
+- UI still shows "OrbitDrop" strings in places; the rebrand to Flickwheel is in progress.
+- Update checker must be retargeted/disabled before any release.
+- Microsoft Store packaging (the original project's identity) has been removed; Flickwheel is
+  GitHub-distributed only for now.
+- Nothing is code-signed; SmartScreen will warn on first run until provenance/signing is addressed.

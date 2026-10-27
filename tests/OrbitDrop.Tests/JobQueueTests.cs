@@ -1,132 +1,84 @@
-using OrbitDrop.Core.Files;
-using OrbitDrop.Core.Jobs;
-using OrbitDrop.Core.Operations;
-using Xunit;
+using OrbitDrop.Core;
+using OrbitDrop.Jobs;
+using OrbitDrop.UI.Toasts;
 
 namespace OrbitDrop.Tests;
 
 public class JobQueueTests
 {
-    private static Job MakeJob(IFileOperation op)
-        => JobFactory.Create(op, new FileSubject("/tmp/a.png"), "/tmp");
-
-    [Fact]
-    public async Task SuccessfulOperation_MarksJobSucceeded()
+    /// <summary>Test provider: reports per file after an optional delay, can fail on demand or throw outright.</summary>
+    private sealed class FakeProvider(TimeSpan delay, Func<string, OutcomeStatus>? status = null, bool throws = false) : IOperationProvider
     {
-        using var queue = new JobQueue();
-        var job = MakeJob(new FakeOperation(ctx => OperationResult.Ok("/tmp/a.jpg")));
+        public string Id => "fake";
+        public static OperationDescriptor Op { get; } = new("fake.op", "fake", OperationMode.Convert, "FAKE", null, "%1", "Fake", "Faking", 0);
+        public IEnumerable<OperationDescriptor> GetOperations(FileSet files, OperationMode mode) => [Op];
 
-        await queue.RunAsync(job);
-
-        Assert.Equal(JobStatus.Succeeded, job.Status);
-        Assert.Equal(1.0, job.Progress);
-        Assert.NotNull(job.Duration);
-    }
-
-    [Fact]
-    public async Task FailedResult_MarksJobFailed_WithoutThrowing()
-    {
-        using var queue = new JobQueue();
-        var job = MakeJob(new FakeOperation(_ => OperationResult.Fail("bad input")));
-
-        await queue.RunAsync(job);
-
-        Assert.Equal(JobStatus.Failed, job.Status);
-        Assert.Equal("bad input", job.Result!.Message);
-    }
-
-    [Fact]
-    public async Task ThrownException_BecomesFailedJob_NotUnhandled()
-    {
-        using var queue = new JobQueue();
-        var job = MakeJob(new FakeOperation(_ => throw new InvalidOperationException("boom")));
-
-        await queue.RunAsync(job);
-
-        Assert.Equal(JobStatus.Failed, job.Status);
-        Assert.IsType<InvalidOperationException>(job.Result!.Error);
-    }
-
-    [Fact]
-    public async Task Cancellation_MarksJobCancelled()
-    {
-        using var queue = new JobQueue();
-        using var cts = new CancellationTokenSource();
-        var job = MakeJob(new FakeOperation(async (_, ct) =>
+        public async Task ExecuteAsync(OperationDescriptor operation, FileSet files, OperationContext context,
+            IProgress<FileOutcome> progress, CancellationToken ct)
         {
-            await Task.Delay(Timeout.Infinite, ct);
-            return OperationResult.Ok("/tmp/a.jpg");
-        }));
-
-        var run = queue.RunAsync(job, cts.Token);
-        cts.Cancel();
-
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => run);
-        Assert.Equal(JobStatus.Cancelled, job.Status);
-    }
-
-    [Fact]
-    public async Task Concurrency_IsBounded()
-    {
-        const int limit = 2;
-        using var queue = new JobQueue(limit);
-        var tracker = new ConcurrencyTracker();
-
-        var jobs = Enumerable.Range(0, 8)
-            .Select(_ => MakeJob(new FakeOperation(async (_, ct) =>
+            if (throws) throw new InvalidOperationException("engine exploded");
+            foreach (var f in files)
             {
-                tracker.Enter();
-                await Task.Delay(25, ct);
-                tracker.Exit();
-                return OperationResult.Ok("/tmp/a.jpg");
-            })))
-            .ToList();
-
-        await Task.WhenAll(jobs.Select(j => queue.RunAsync(j)));
-
-        Assert.True(tracker.Peak <= limit, $"Peak concurrency {tracker.Peak} exceeded limit {limit}.");
-        Assert.All(jobs, j => Assert.Equal(JobStatus.Succeeded, j.Status));
-    }
-
-    private sealed class ConcurrencyTracker
-    {
-        private int _current;
-        private int _peak;
-        private readonly object _lock = new();
-
-        public int Peak { get { lock (_lock) return _peak; } }
-
-        public void Enter()
-        {
-            lock (_lock)
-            {
-                _current++;
-                if (_current > _peak) _peak = _current;
+                await Task.Delay(delay, ct);
+                var s = status?.Invoke(f) ?? OutcomeStatus.Succeeded;
+                progress.Report(new FileOutcome(f, s, s == OutcomeStatus.Succeeded ? f + ".out" : null, s == OutcomeStatus.Failed ? "nope" : null));
             }
         }
-
-        public void Exit()
-        {
-            lock (_lock) _current--;
-        }
     }
 
-    private sealed class FakeOperation : IFileOperation
+    private static Job Start(IOperationProvider p, params string[] files) =>
+        new JobQueue(new OperationRegistry([p])).Enqueue(FakeProvider.Op, new FileSet(files.Select(f => @"C:\x\" + f)), Ctx.Default());
+
+    [Fact]
+    public async Task Reports_one_outcome_per_file()
     {
-        private readonly Func<OperationContext, CancellationToken, Task<OperationResult>> _body;
+        var job = Start(new FakeProvider(TimeSpan.Zero), "a", "b", "c");
+        await job.Completion;
+        Assert.Equal(JobState.Completed, job.State);
+        Assert.Equal(3, job.Succeeded);
+    }
 
-        public FakeOperation(Func<OperationContext, OperationResult> body)
-            => _body = (ctx, _) => Task.FromResult(body(ctx));
+    [Fact]
+    public async Task Cancel_marks_remaining_files_canceled()
+    {
+        var job = Start(new FakeProvider(TimeSpan.FromMilliseconds(200)), "a", "b", "c", "d");
+        await Task.Delay(50);
+        job.Cancel();
+        await job.Completion;
+        Assert.Equal(JobState.Canceled, job.State);
+        Assert.Equal(4, job.Outcomes.Count);
+        Assert.Contains(job.Outcomes, o => o.Status == OutcomeStatus.Canceled);
+        Assert.Equal((ToastKind.Info, "Canceled"), (ToastManager.Summarize(job).Kind, ToastManager.Summarize(job).Title));
+    }
 
-        public FakeOperation(Func<OperationContext, CancellationToken, Task<OperationResult>> body)
-            => _body = body;
+    [Fact]
+    public async Task Provider_exception_becomes_failed_outcomes_not_a_crash()
+    {
+        var job = Start(new FakeProvider(TimeSpan.Zero, throws: true), "a", "b");
+        await job.Completion;
+        Assert.Equal(2, job.Failed);
+        Assert.All(job.Outcomes, o => Assert.Equal("engine exploded", o.Message));
+        Assert.Equal(ToastKind.Error, ToastManager.Summarize(job).Kind);
+    }
 
-        public string Id => "fake.op";
-        public string DisplayName => "Fake";
-        public OperationCategory Category => OperationCategory.FileAction;
-        public bool CanApplyTo(FileSubject subject) => true;
+    [Fact]
+    public async Task Partial_failure_is_summarised_as_a_warning()
+    {
+        var job = Start(new FakeProvider(TimeSpan.Zero, f => f.EndsWith("b") ? OutcomeStatus.Failed : OutcomeStatus.Succeeded), "a", "b", "c");
+        await job.Completion;
+        var (kind, title, detail) = ToastManager.Summarize(job);
+        Assert.Equal(ToastKind.Warning, kind);
+        Assert.Equal("2 saved · 1 failed", title);
+        Assert.Contains("nope", detail);
+    }
 
-        public Task<OperationResult> ExecuteAsync(OperationContext context, CancellationToken cancellationToken)
-            => _body(context, cancellationToken);
+    [Fact]
+    public async Task Single_success_names_the_new_file()
+    {
+        var job = Start(new FakeProvider(TimeSpan.Zero), "photo.jpg");
+        await job.Completion;
+        var (kind, title, _) = ToastManager.Summarize(job);
+        Assert.Equal(ToastKind.Success, kind);
+        Assert.Equal("Saved photo.jpg.out", title);
     }
 }

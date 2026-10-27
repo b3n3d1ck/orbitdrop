@@ -1,33 +1,30 @@
-# Build output
-[Bb]in/
-[Oo]bj/
-[Oo]ut/
-artifacts/
-publish/
+# Third-party reference material (Tangerine demo video) — never commit
+*.mp4
+*.mov
+reference/
+
+# .NET
+bin/
+obj/
 *.user
-*.suo
 .vs/
+TestResults/
+artifacts/
 
-# Test / coverage
-[Tt]est[Rr]esults/
-coverage/
-*.trx
-*.coverage
+# Probe / runtime logs
+*.log
 
-# WiX
-*.wixobj
-*.wixpdb
+# Design-review renders
+ui-review/
 
-# Rider / VS Code
-.idea/
-.vscode/
+# Keep our own synthetic test fixtures (all other video stays ignored)
+!tests/OrbitDrop.Tests/Fixtures/*.mp4
 
-# OS cruft
-.DS_Store
-Thumbs.db
+# The website's own videos (our app renders and our film; nothing third-party)
+!website/assets/*.mp4
+!website/assets/demo/*.mp4
 
-# Never commit secrets or local env
-*.pfx
-*.snk
+# Local secrets (API keys) and private mail: never commit
 .env
-secrets.json
+.env.*
+marketing/mail/inbox/
