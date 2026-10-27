@@ -1,7 +1,6 @@
 using OrbitDrop.Core.Files;
-using OrbitDrop.Core.Operations;
 
-namespace OrbitDrop.App.ViewModels;
+namespace OrbitDrop.Core.Operations;
 
 /// <summary>
 /// Builds the concrete wheel choices for a subject. Only actions whose underlying operation
@@ -11,10 +10,12 @@ public static class ActionCatalog
 {
     public static IReadOnlyList<RadialAction> ForSubject(FileSubject subject, IOperationRegistry registry)
     {
-        var actions = new List<RadialAction>();
-        var applicable = registry.GetApplicable(subject);
+        ArgumentNullException.ThrowIfNull(subject);
+        ArgumentNullException.ThrowIfNull(registry);
 
-        foreach (var op in applicable)
+        var actions = new List<RadialAction>();
+
+        foreach (var op in registry.GetApplicable(subject))
         {
             if (op.Id == "image.convert")
             {

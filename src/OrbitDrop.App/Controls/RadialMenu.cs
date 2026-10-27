@@ -7,13 +7,14 @@ using OrbitDrop.App.ViewModels;
 namespace OrbitDrop.App.Controls;
 
 /// <summary>
-/// The radial action wheel. Segments are laid out around a circle; the centre button cancels.
-/// Fully keyboard-navigable (arrows move between segments, Enter/Space activates, Esc cancels),
-/// which also serves as the accessible path alongside the mouse/drag interaction.
+/// The radial action wheel. Segments live in a <see cref="RadialPanel"/> that arranges them
+/// around a circle on every layout pass; the centre button cancels. Fully keyboard-navigable
+/// (arrows move between segments, Enter/Space activates, Esc cancels), which is also the
+/// accessible path alongside the mouse.
 /// </summary>
 public sealed class RadialMenu : UserControl
 {
-    private readonly Canvas _surface = new();
+    private readonly RadialPanel _segments = new();
     private readonly Button _center;
     private readonly List<Button> _buttons = new();
     private int _focusIndex = -1;
@@ -25,22 +26,28 @@ public sealed class RadialMenu : UserControl
     {
         Focusable = true;
 
-        _center = new Button { Content = "Cancel", Width = 104, Height = 104, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        _center = new Button
+        {
+            Content = "Cancel",
+            Width = 104,
+            Height = 104,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
         ApplyWheelStyle(_center, accent: false);
         _center.Click += (_, _) => Cancelled?.Invoke(this, EventArgs.Empty);
 
         var root = new Grid { Background = new SolidColorBrush(Color.FromArgb(0xB3, 0x0A, 0x0B, 0x0D)) };
-        root.Children.Add(_surface);
+        root.Children.Add(_segments);
         root.Children.Add(_center);
         Content = root;
 
-        SizeChanged += (_, _) => Relayout();
-        Loaded += (_, _) => { Relayout(); FocusCurrent(); };
+        Loaded += (_, _) => FocusCurrent();
     }
 
     public void SetActions(IReadOnlyList<RadialActionViewModel> actions)
     {
-        _surface.Children.Clear();
+        _segments.Children.Clear();
         _buttons.Clear();
 
         foreach (var action in actions)
@@ -56,11 +63,10 @@ public sealed class RadialMenu : UserControl
             ApplyWheelStyle(button, accent: true);
             button.Click += OnSegmentClick;
             _buttons.Add(button);
-            _surface.Children.Add(button);
+            _segments.Children.Add(button);
         }
 
         _focusIndex = _buttons.Count > 0 ? 0 : -1;
-        Relayout();
         FocusCurrent();
     }
 
@@ -68,32 +74,6 @@ public sealed class RadialMenu : UserControl
     {
         if (sender is Button { Tag: RadialActionViewModel action })
             ActionSelected?.Invoke(this, action);
-    }
-
-    private void Relayout()
-    {
-        if (ActualWidth <= 0 || ActualHeight <= 0 || _buttons.Count == 0)
-            return;
-
-        var cx = ActualWidth / 2.0;
-        var cy = ActualHeight / 2.0;
-        var radius = Math.Max(140, Math.Min(cx, cy) * 0.64);
-
-        for (var i = 0; i < _buttons.Count; i++)
-        {
-            var button = _buttons[i];
-            button.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            var bw = button.DesiredSize.Width;
-            var bh = button.DesiredSize.Height;
-
-            // Start at 12 o'clock and go clockwise.
-            var angle = -Math.PI / 2.0 + i * (2.0 * Math.PI / _buttons.Count);
-            var x = cx + radius * Math.Cos(angle);
-            var y = cy + radius * Math.Sin(angle);
-
-            Canvas.SetLeft(button, x - bw / 2.0);
-            Canvas.SetTop(button, y - bh / 2.0);
-        }
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
