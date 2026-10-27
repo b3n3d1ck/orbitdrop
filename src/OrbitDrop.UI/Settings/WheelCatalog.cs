@@ -10,5 +10,5 @@ public sealed record WheelEntry(WheelChoice Choice, IReadOnlyList<WheelChoice> M
 
 public sealed record WheelModeSection(OperationMode Mode, IReadOnlyList<WheelEntry> Entries);
 
-/// <summary>Everything OrbitDrop offers for one kind of file (Photos, Video …), by wheel mode.</summary>
+/// <summary>Everything Flickwheel offers for one kind of file (Photos, Video …), by wheel mode.</summary>
 public sealed record WheelCategory(string Title, string Glyph, IReadOnlyList<WheelModeSection> Modes);

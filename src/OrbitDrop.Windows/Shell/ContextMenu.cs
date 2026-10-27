@@ -5,8 +5,8 @@ using OrbitDrop.Windows.Interop;
 namespace OrbitDrop.Windows.Shell;
 
 /// <summary>
-/// "OrbitDrop" in File Explorer's right-click menu. The entry itself is OrbitDropShell.dll (src/OrbitDrop.ShellMenu):
-/// choosing it sends the selected paths to OrbitDrop's message window (see <see cref="TryReadFiles"/>).
+/// "Flickwheel" in File Explorer's right-click menu. The entry itself is OrbitDropShell.dll (src/OrbitDrop.ShellMenu):
+/// choosing it sends the selected paths to Flickwheel's message window (see <see cref="TryReadFiles"/>).
 /// The Microsoft Store package registers the DLL in its manifest (Windows 11's main menu); the GitHub version
 /// registers it here, for the current user only (the classic menu, under "Show more options" on Windows 11).
 /// </summary>
@@ -25,9 +25,9 @@ public static class ContextMenu
     public const int OpenFilesMessage = 0x0D0F;
     private const int WM_COPYDATA = 0x004A, MaxItems = 500;
 
-    private const string VerbKey = @"Software\Classes\AllFilesystemObjects\shell\OrbitDrop";
+    private const string VerbKey = @"Software\Classes\AllFilesystemObjects\shell\Flickwheel";
     private const string ClsidKey = @"Software\Classes\CLSID\" + Clsid;
-    private const string SettingsKey = @"Software\OrbitDrop";
+    private const string SettingsKey = @"Software\Flickwheel";
 
     /// <summary>
     /// Applies the setting. Always records it where the DLL looks (so the Store version's entry hides itself when off);
@@ -57,7 +57,7 @@ public static class ContextMenu
     {
         using (var clsid = Registry.CurrentUser.CreateSubKey(ClsidKey))
         {
-            clsid.SetValue("", "OrbitDrop right-click menu");
+            clsid.SetValue("", "Flickwheel right-click menu");
             using var server = clsid.CreateSubKey("InprocServer32");
             server.SetValue("", dll);
             server.SetValue("ThreadingModel", "Apartment");

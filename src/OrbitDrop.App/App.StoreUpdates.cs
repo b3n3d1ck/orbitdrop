@@ -7,8 +7,8 @@ namespace OrbitDrop.App;
 /// <summary>
 /// The Store version updates itself right away instead of waiting for the next restart: it asks the Store for updates
 /// a few minutes after starting and every 6 hours, and when one is waiting it installs it silently the moment
-/// OrbitDrop isn't in use (no wheel open, nothing converting, no OrbitDrop windows). Windows then starts the new
-/// version, which says "OrbitDrop updated".
+/// Flickwheel isn't in use (no wheel open, nothing converting, no Flickwheel windows). Windows then starts the new
+/// version, which says "Flickwheel updated".
 /// </summary>
 public partial class App
 {
@@ -32,7 +32,7 @@ public partial class App
         catch (Exception ex) { Log.Info($"Store update check failed: {ex.Message}"); return; }
         if (count == 0) { Log.Info("Store update check: up to date"); return; }
 
-        Log.Info("Store update available: installing as soon as OrbitDrop isn't in use");
+        Log.Info("Store update available: installing as soon as Flickwheel isn't in use");
         _storeWaitIdle = new DispatcherTimer { Interval = TimeSpan.FromSeconds(20) };
         _storeWaitIdle.Tick += async (_, _) =>
         {
@@ -49,7 +49,7 @@ public partial class App
         _storeInstalling = true;
         try
         {
-            Log.Info("Installing the Store update (OrbitDrop restarts by itself)");
+            Log.Info("Installing the Store update (Flickwheel restarts by itself)");
             string state = await AppPackage.InstallStoreUpdatesSilentlyAsync();
             Log.Info($"Store update finished: {state}"); // still running here only if it didn't install
         }

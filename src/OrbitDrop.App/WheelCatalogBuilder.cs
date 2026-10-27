@@ -4,7 +4,7 @@ using OrbitDrop.UI.Settings;
 namespace OrbitDrop.App;
 
 /// <summary>
-/// Lists every option OrbitDrop offers, per kind of file, by asking the live registry about sample files. So the
+/// Lists every option Flickwheel offers, per kind of file, by asking the live registry about sample files. So the
 /// Wheel page in Settings always matches the real wheel, including options added later.
 /// </summary>
 internal static class WheelCatalogBuilder
@@ -25,7 +25,7 @@ internal static class WheelCatalogBuilder
     public static IReadOnlyList<WheelCategory> Build(OperationRegistry registry)
     {
         // Some providers check that files exist (metadata), so the samples are real, empty files.
-        string dir = Path.Combine(Path.GetTempPath(), "OrbitDrop", "wheel-catalog");
+        string dir = Path.Combine(Path.GetTempPath(), "Flickwheel", "wheel-catalog");
         Directory.CreateDirectory(dir);
         string Real(string name)
         {

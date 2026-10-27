@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True"
         ShowInTaskbar="False" ShowActivated="False" ResizeMode="NoResize"
-        Width="372" SizeToContent="Height" Title="OrbitDrop" UseLayoutRounding="True">
+        Width="372" SizeToContent="Height" Title="Flickwheel" UseLayoutRounding="True">
     <!-- 16 px margin leaves room for the E2 shadow on a per-pixel transparent window. -->
     <Grid x:Name="Root" Margin="16,12,16,20">
         <Grid.RenderTransform>

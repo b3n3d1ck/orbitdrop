@@ -29,7 +29,7 @@ public interface ISettingsHost
     bool KeyboardShortcutAvailable => true;
     /// <summary>The Store version: the Microsoft Store handles updates, so the update switches are hidden.</summary>
     bool StoreManagedUpdates => false;
-    /// <summary>Every option OrbitDrop has, for the Wheel page (built by the app from the live registry).</summary>
+    /// <summary>Every option Flickwheel has, for the Wheel page (built by the app from the live registry).</summary>
     IReadOnlyList<WheelCategory> WheelCatalog => [];
     void UpdateButtonClicked() { }
     /// <summary>"Rate" in the Store version (the Store's own rating window); "Star on GitHub" otherwise.</summary>
@@ -95,15 +95,15 @@ public sealed class SettingsViewModel : ObservableObject
     public bool KeyboardShortcut { get => S.KeyboardShortcut; set => Set(s => s.KeyboardShortcut = value, nameof(KeyboardShortcut), nameof(KeyboardShortcutHint), nameof(UseClipboardHint)); }
     public string KeyboardShortcutHint => _host.KeyboardShortcutAvailable
         ? "Select files in File Explorer, on the desktop or in VS Code, press it, then click an option. Click the centre (or press it again) for Tools and Actions."
-        : "Another app is using this shortcut, so OrbitDrop couldn't claim it.";
+        : "Another app is using this shortcut, so Flickwheel couldn't claim it.";
     public bool UseClipboard { get => S.UseClipboard; set => Set(s => s.UseClipboard = value, nameof(UseClipboard)); }
     public string UseClipboardHint => S.KeyboardShortcut
         ? "With nothing selected, Ctrl + Alt + Space opens the wheel for what you copied: files, or an image such as a screenshot. Copied images are saved to the folder you're in, or Pictures."
         : "Needs Ctrl + Alt + Space (above), which is off.";
     public bool ContextMenu { get => S.ContextMenu; set => Set(s => s.ContextMenu = value, nameof(ContextMenu)); }
     public string ContextMenuHint => OrbitDrop.Windows.Shell.AppPackage.IsPackaged
-        ? "Right-click files or folders in File Explorer and choose OrbitDrop to open the wheel for them."
-        : "Right-click files or folders in File Explorer and choose OrbitDrop (on Windows 11, under “Show more options”).";
+        ? "Right-click files or folders in File Explorer and choose Flickwheel to open the wheel for them."
+        : "Right-click files or folders in File Explorer and choose Flickwheel (on Windows 11, under “Show more options”).";
     public bool LastUsedFirst { get => S.LastUsedFirst; set => Set(s => s.LastUsedFirst = value, nameof(LastUsedFirst)); }
     public bool ShowSizeEstimates { get => S.ShowSizeEstimates; set => Set(s => s.ShowSizeEstimates = value, nameof(ShowSizeEstimates)); }
     public bool OfferUndo { get => S.OfferUndo; set => Set(s => s.OfferUndo = value, nameof(OfferUndo)); }

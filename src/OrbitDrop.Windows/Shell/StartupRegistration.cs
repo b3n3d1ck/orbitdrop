@@ -6,7 +6,7 @@ namespace OrbitDrop.Windows.Shell;
 public static class StartupRegistration
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    public const string ValueName = "OrbitDrop";
+    public const string ValueName = "Flickwheel";
 
     public static bool IsEnabled
     {

@@ -156,7 +156,7 @@ internal static class StoreArt
                 if (wordmark)
                 {
                     var ink = new SolidColorBrush(ThemeManager.Token("TextPrimary"));
-                    var title = Text("OrbitDrop", iconSize * 0.36, FontWeights.SemiBold, ink, w);
+                    var title = Text("Flickwheel", iconSize * 0.36, FontWeights.SemiBold, ink, w);
                     var sub = Text("Your files. Your flow.", iconSize * 0.13, FontWeights.Normal, new SolidColorBrush(ThemeManager.Token("TextSecondary")), w);
                     dc.DrawText(title, new Point((w - title.Width) / 2, r.Bottom + iconSize * 0.18));
                     dc.DrawText(sub, new Point((w - sub.Width) / 2, r.Bottom + iconSize * 0.18 + title.Height + iconSize * 0.04));

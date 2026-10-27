@@ -63,22 +63,23 @@ public readonly record struct SemVersion(int Major, int Minor, int Patch, string
 public sealed record ReleaseInfo(SemVersion Version, string Tag, string SetupUrl, string? ChecksumsUrl, string PageUrl);
 
 /// <summary>
-/// Checks GitHub Releases for a newer OrbitDrop and downloads its installer with checksum verification.
+/// Checks GitHub Releases for a newer Flickwheel and downloads its installer with checksum verification.
 /// Network use: one anonymous GET to api.github.com per check; nothing about the user or their files is sent.
 /// </summary>
 public sealed class UpdateService
 {
-    public const string SetupAsset = "OrbitDrop-Setup.exe";
+    public const string SetupAsset = "Flickwheel-Setup.exe";
     public const string ChecksumsAsset = "SHA256SUMS.txt";
 
     private readonly HttpClient _http;
     private readonly string _releasesApi, _releasesFeed, _downloadBase;
 
-    public UpdateService(HttpClient? http = null, string owner = "i3sam", string repo = "OrbitDrop")
+    // Flickwheel's own repository — never the upstream OrbitDrop releases.
+    public UpdateService(HttpClient? http = null, string owner = "b3n3d1ck", string repo = "orbitdrop")
     {
         _http = http ?? new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
         if (!_http.DefaultRequestHeaders.UserAgent.Any())
-            _http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("OrbitDrop", Current.ToString()));
+            _http.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Flickwheel", Current.ToString()));
         _releasesApi = $"https://api.github.com/repos/{owner}/{repo}/releases?per_page=20";
         _releasesFeed = $"https://github.com/{owner}/{repo}/releases.atom";
         _downloadBase = $"https://github.com/{owner}/{repo}/releases/download";
@@ -181,7 +182,7 @@ public sealed class UpdateService
         string sums = await _http.GetStringAsync(release.ChecksumsUrl, ct).ConfigureAwait(false);
         string expected = ExpectedHash(sums, SetupAsset) ?? throw new InvalidOperationException("The checksum file doesn't list the installer.");
 
-        string dir = Path.Combine(Path.GetTempPath(), "OrbitDrop-update", release.Version.ToString());
+        string dir = Path.Combine(Path.GetTempPath(), "Flickwheel-update", release.Version.ToString());
         Directory.CreateDirectory(dir);
         string path = Path.Combine(dir, SetupAsset);
         try

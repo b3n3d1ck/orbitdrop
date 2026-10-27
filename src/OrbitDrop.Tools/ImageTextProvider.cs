@@ -18,7 +18,7 @@ public sealed class ImageTextProvider : IOperationProvider
 
     /// <summary>
     /// Text recognition and the wallpaper both hand the file to Windows itself, so only formats a Windows codec reads
-    /// qualify: not SVG (drawn by OrbitDrop), and WebP only where Microsoft's WebP extension is installed.
+    /// qualify: not SVG (drawn by Flickwheel), and WebP only where Microsoft's WebP extension is installed.
     /// </summary>
     private static bool WindowsCanRead(string path)
     {

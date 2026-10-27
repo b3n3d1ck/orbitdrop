@@ -59,7 +59,7 @@ public sealed class PdfProvider : IOperationProvider
                                 s => PdfImageWriter.Write(s, [page], Path.GetFileNameWithoutExtension(file)), ValidatePdf, ct);
                         });
                     }
-                }, "OrbitDrop PDF");
+                }, "Flickwheel PDF");
                 break;
 
             case "tool.image.pdf-combine":
@@ -77,7 +77,7 @@ public sealed class PdfProvider : IOperationProvider
                     // One PDF for the whole selection: the first file carries the output, the rest are part of it.
                     for (int i = 0; i < files.Count; i++)
                         progress.Report(new FileOutcome(files[i], OutcomeStatus.Succeeded, i == 0 ? output : null));
-                }, "OrbitDrop PDF");
+                }, "Flickwheel PDF");
                 break;
 
             case "convert.pdf.png" or "convert.pdf.jpg":

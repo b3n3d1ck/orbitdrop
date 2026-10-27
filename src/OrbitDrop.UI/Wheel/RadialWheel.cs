@@ -15,7 +15,7 @@ using static OrbitDrop.UI.Wheel.WheelGeometry;
 namespace OrbitDrop.UI.Wheel;
 
 /// <summary>
-/// The OrbitDrop radial wheel: topmost, never activates, per-pixel transparent, Per-Monitor-V2 aware.
+/// The Flickwheel radial wheel: topmost, never activates, per-pixel transparent, Per-Monitor-V2 aware.
 /// Everything is laid out in base units on a <see cref="WheelGeometry.Extent"/>-sized canvas inside a Viewbox, so the
 /// window's physical size alone decides DPI scaling and the Compact/Standard/Large setting.
 /// The whole disc has non-zero alpha so the OS (and OLE) hit-tests every point on it (probe finding F1).
@@ -68,7 +68,7 @@ public sealed class RadialWheel : Window
         ShowActivated = false;
         ResizeMode = ResizeMode.NoResize;
         Width = Height = Extent;
-        Title = "OrbitDrop";
+        Title = "Flickwheel";
         UseLayoutRounding = true;
 
         double d = Disc, m = WheelGeometry.Margin;

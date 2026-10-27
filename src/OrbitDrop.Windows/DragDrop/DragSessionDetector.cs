@@ -163,7 +163,7 @@ public sealed class DragSessionDetector : IDisposable
     }
 
     /// <summary>
-    /// A drag that starts in one of OrbitDrop's own windows (guide practice photo, Float shelf) has no shell drag image,
+    /// A drag that starts in one of Flickwheel's own windows (guide practice photo, Float shelf) has no shell drag image,
     /// so arm the trigger key directly. It disarms when the mouse button is released, like any other drag.
     /// </summary>
     public void ArmInternal()

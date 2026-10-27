@@ -53,10 +53,10 @@ public sealed class PrintProvider : IOperationProvider
                 {
                     var paper = new Size(dialog.PrintableAreaWidth, dialog.PrintableAreaHeight);
                     dialog.PrintDocument(job.Paginator(paper, range ? dialog.PageRange.PageFrom : 1, range ? dialog.PageRange.PageTo : pages.Count),
-                        files.Count == 1 ? Path.GetFileName(files[0]) : $"OrbitDrop: {files.Count} files");
+                        files.Count == 1 ? Path.GetFileName(files[0]) : $"Flickwheel: {files.Count} files");
                 }
                 catch (Exception ex) { problem = $"Printing didn't work: {ex.Message}"; }
-            }, "OrbitDrop print");
+            }, "Flickwheel print");
 
         foreach (var file in files)
         {

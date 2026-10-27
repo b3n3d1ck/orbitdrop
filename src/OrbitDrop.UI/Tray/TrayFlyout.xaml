@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True"
-        ShowInTaskbar="False" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Title="OrbitDrop menu"
+        ShowInTaskbar="False" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Title="Flickwheel menu"
         UseLayoutRounding="True" FontFamily="{StaticResource Orbit.Font.Text}">
     <Grid x:Name="Root" Margin="16,12,16,20" Width="268">
         <Border CornerRadius="8" Background="{DynamicResource Orbit.Surface}">
@@ -15,7 +15,7 @@
                 <DockPanel Margin="14,4,14,10">
                     <Image Source="pack://application:,,,/OrbitDrop.UI;component/Assets/orbitdrop-64.png" Width="32" Height="32" Margin="0,0,12,0" />
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="OrbitDrop" Style="{StaticResource Orbit.Text.BodyStrong}" />
+                        <TextBlock Text="Flickwheel" Style="{StaticResource Orbit.Text.BodyStrong}" />
                         <StackPanel Orientation="Horizontal">
                             <Ellipse x:Name="StatusDot" Width="7" Height="7" Margin="0,1,6,0" VerticalAlignment="Center" />
                             <TextBlock x:Name="StatusText" Style="{StaticResource Orbit.Text.Caption}" />
@@ -31,7 +31,7 @@
                     <DockPanel><TextBlock Style="{StaticResource Orbit.Glyph}" Text="&#xE713;" Width="20" Margin="0,0,12,0" /><TextBlock Text="Settings" Style="{StaticResource Orbit.Text.Body}" VerticalAlignment="Center" /></DockPanel>
                 </Button>
                 <Button Style="{StaticResource Orbit.Button.MenuRow}" Click="OnHelp">
-                    <DockPanel><TextBlock Style="{StaticResource Orbit.Glyph}" Text="&#xE897;" Width="20" Margin="0,0,12,0" /><TextBlock Text="How to use OrbitDrop" Style="{StaticResource Orbit.Text.Body}" VerticalAlignment="Center" /></DockPanel>
+                    <DockPanel><TextBlock Style="{StaticResource Orbit.Glyph}" Text="&#xE897;" Width="20" Margin="0,0,12,0" /><TextBlock Text="How to use Flickwheel" Style="{StaticResource Orbit.Text.Body}" VerticalAlignment="Center" /></DockPanel>
                 </Button>
                 <Button Style="{StaticResource Orbit.Button.MenuRow}" Click="OnUpdate">
                     <DockPanel>
@@ -46,7 +46,7 @@
                 </Button>
                 <Border Height="1" Background="{DynamicResource Orbit.Stroke}" Margin="0,4" />
                 <Button Style="{StaticResource Orbit.Button.MenuRow}" Click="OnExit">
-                    <DockPanel><TextBlock Style="{StaticResource Orbit.Glyph}" Text="&#xE7E8;" Width="20" Margin="0,0,12,0" /><TextBlock Text="Quit OrbitDrop" Style="{StaticResource Orbit.Text.Body}" VerticalAlignment="Center" /></DockPanel>
+                    <DockPanel><TextBlock Style="{StaticResource Orbit.Glyph}" Text="&#xE7E8;" Width="20" Margin="0,0,12,0" /><TextBlock Text="Quit Flickwheel" Style="{StaticResource Orbit.Text.Body}" VerticalAlignment="Center" /></DockPanel>
                 </Button>
             </StackPanel>
         </Border>

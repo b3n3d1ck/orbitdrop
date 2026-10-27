@@ -131,13 +131,13 @@ public partial class SettingsWindow : Window
 
     private void OnChooseFolder(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFolderDialog { Title = "Choose where OrbitDrop saves new files" };
+        var dialog = new OpenFolderDialog { Title = "Choose where Flickwheel saves new files" };
         if (dialog.ShowDialog(this) == true) _vm.ChooseOutputFolder(dialog.FolderName);
     }
 
     private void OnReset(object sender, RoutedEventArgs e)
     {
-        var answer = MessageBox.Show(this, "Restore all OrbitDrop settings to their defaults?", "Reset settings",
+        var answer = MessageBox.Show(this, "Restore all Flickwheel settings to their defaults?", "Reset settings",
             MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
         if (answer == MessageBoxResult.OK) _vm.ResetCommand.Execute(null);
     }

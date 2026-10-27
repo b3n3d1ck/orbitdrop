@@ -37,7 +37,7 @@ public sealed class AppSettings
     public bool KeepOpenOnCentre { get; set; }
     /// <summary>Ctrl+Alt+Space with nothing selected opens the wheel for what's on the clipboard: copied files or an image.</summary>
     public bool UseClipboard { get; set; } = true;
-    /// <summary>"OrbitDrop" in File Explorer's right-click menu.</summary>
+    /// <summary>"Flickwheel" in File Explorer's right-click menu.</summary>
     public bool ContextMenu { get; set; } = true;
 
     // Wheel extras: off by default, so the wheel stays exactly as people know it unless they choose otherwise.
@@ -73,7 +73,7 @@ public sealed class AppSettings
     // Updates: one anonymous request to GitHub Releases at most once a day, only while this is on.
     public bool CheckForUpdates { get; set; } = true;
     public DateTimeOffset? LastUpdateCheck { get; set; }
-    /// <summary>Download and install updates without asking, at a moment OrbitDrop isn't in use.</summary>
+    /// <summary>Download and install updates without asking, at a moment Flickwheel isn't in use.</summary>
     public bool AutoInstallUpdates { get; set; } = true;
 
     // Wheel: options and groups the user turned off (see WheelFilter).
@@ -84,7 +84,7 @@ public sealed class AppSettings
     // Actions: the last few folders used with Copy to / Move to (most recent first).
     public string[] RecentFolders { get; set; } = [];
 
-    // Rating: jobs that produced a result, and whether OrbitDrop has asked for a rating (it asks once, ever).
+    // Rating: jobs that produced a result, and whether Flickwheel has asked for a rating (it asks once, ever).
     public int SuccessfulJobs { get; set; }
     public bool RatingAsked { get; set; }
 

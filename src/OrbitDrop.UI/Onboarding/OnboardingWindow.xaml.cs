@@ -34,7 +34,7 @@ public partial class OnboardingWindow : Window
     {
         InitializeComponent();
         _triggerKey = triggerKey;
-        _practiceFolder = practiceFolder ?? System.IO.Path.Combine(System.IO.Path.GetTempPath(), "OrbitDrop guide");
+        _practiceFolder = practiceFolder ?? System.IO.Path.Combine(System.IO.Path.GetTempPath(), "Flickwheel guide");
         _steps =
         [
             new(GuideScene.Hero, "WELCOME", "Do it right where your files are",

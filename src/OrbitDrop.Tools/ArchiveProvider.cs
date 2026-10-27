@@ -147,7 +147,7 @@ public sealed class ArchiveProvider : IOperationProvider
 
     private static string Friendly(Exception ex) => ex switch
     {
-        InvalidDataException => "The archive is damaged or isn't a format OrbitDrop can open.",
+        InvalidDataException => "The archive is damaged or isn't a format Flickwheel can open.",
         IOException io when io.Message.Contains("outside", StringComparison.OrdinalIgnoreCase) =>
             "The archive tries to write outside its folder, so it wasn't extracted.",
         FileNotFoundException => "An item no longer exists.",

@@ -27,11 +27,11 @@ public partial class App
             timer.Stop();
             Log.Info("Asking for a rating");
             if (AppPackage.IsPackaged)
-                _toasts.ShowAction(ToastKind.Info, "Enjoying OrbitDrop?", "A quick rating helps other people find it.",
+                _toasts.ShowAction(ToastKind.Info, "Enjoying Flickwheel?", "A quick rating helps other people find it.",
                     "Rate", () => _ = RateAsync(), ScreenInfo.CursorPosition, TimeSpan.FromSeconds(15));
             else
-                _toasts.ShowAction(ToastKind.Info, "Enjoying OrbitDrop?", "A star on GitHub helps other people find it.",
-                    "Star", () => UpdateManager.OpenUrl("https://github.com/i3sam/OrbitDrop"), ScreenInfo.CursorPosition, TimeSpan.FromSeconds(15));
+                _toasts.ShowAction(ToastKind.Info, "Enjoying Flickwheel?", "A star on GitHub helps other people find it.",
+                    "Star", () => UpdateManager.OpenUrl("https://github.com/b3n3d1ck/orbitdrop"), ScreenInfo.CursorPosition, TimeSpan.FromSeconds(15));
         };
         timer.Start();
     });
@@ -45,7 +45,7 @@ public partial class App
     {
         Update(s => s.RatingAsked = true); // they found it themselves: no need to ask later
         if (AppPackage.IsPackaged) _ = RateAsync();
-        else UpdateManager.OpenUrl("https://github.com/i3sam/OrbitDrop");
+        else UpdateManager.OpenUrl("https://github.com/b3n3d1ck/orbitdrop");
     }
 
     private async Task RateAsync()

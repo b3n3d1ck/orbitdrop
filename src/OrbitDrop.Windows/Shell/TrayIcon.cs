@@ -5,7 +5,7 @@ namespace OrbitDrop.Windows.Shell;
 
 /// <summary>
 /// Notification-area icon via Shell_NotifyIcon (NOTIFYICON_VERSION_4). Re-adds itself when Explorer restarts.
-/// The menu is drawn by the UI layer, so it matches the OrbitDrop design system.
+/// The menu is drawn by the UI layer, so it matches the Flickwheel design system.
 /// </summary>
 public sealed class TrayIcon : IDisposable
 {

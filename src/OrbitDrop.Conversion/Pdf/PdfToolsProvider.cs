@@ -77,7 +77,7 @@ public sealed class PdfToolsProvider : IOperationProvider
             catch (OperationCanceledException) { throw; }
             catch (Exception ex) { progress.Report(new FileOutcome(file, OutcomeStatus.Failed, Message: Friendly(ex))); }
         }
-    }, "OrbitDrop PDF tools");
+    }, "Flickwheel PDF tools");
 
     // ------------------------------------------------------------------ operations
 

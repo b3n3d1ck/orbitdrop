@@ -44,7 +44,7 @@ public static class SvgCodec
         float scale = Math.Min(Math.Max(2f, SmallTarget / longSide), MaxSide / longSide);
         int w = Math.Max(1, (int)Math.Round(bounds.Width * scale)), h = Math.Max(1, (int)Math.Round(bounds.Height * scale));
 
-        // Skia draws premultiplied; WPF converts that to the straight alpha every other part of OrbitDrop uses.
+        // Skia draws premultiplied; WPF converts that to the straight alpha every other part of Flickwheel uses.
         using var bitmap = new SKBitmap(new SKImageInfo(w, h, SKColorType.Bgra8888, SKAlphaType.Premul));
         using (var canvas = new SKCanvas(bitmap))
         {

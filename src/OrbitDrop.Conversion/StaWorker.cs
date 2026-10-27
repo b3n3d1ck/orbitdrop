@@ -3,7 +3,7 @@ namespace OrbitDrop.Conversion;
 /// <summary>Runs work on a dedicated background STA thread (WPF imaging objects require STA).</summary>
 public static class StaWorker
 {
-    public static Task RunAsync(Action work, string name = "OrbitDrop worker")
+    public static Task RunAsync(Action work, string name = "Flickwheel worker")
     {
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var thread = new Thread(() =>

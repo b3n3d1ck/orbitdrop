@@ -133,7 +133,7 @@ public static class FileProperties
             Field("System.Rating", "Rating", MetadataFieldKind.Rating);
             Field("System.Comment", "Comments", MetadataFieldKind.MultiLine);
         }
-        // Only offer to remove a location where OrbitDrop can do it losslessly.
+        // Only offer to remove a location where Flickwheel can do it losslessly.
         return new MetadataSnapshot(path, kind.ToString(), facts, fields, location is not null && LocationCapable.Contains(System.IO.Path.GetExtension(path)));
     }
 

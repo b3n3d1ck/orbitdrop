@@ -22,7 +22,7 @@ using OrbitDrop.Windows.Shell;
 
 namespace OrbitDrop.App;
 
-/// <summary>Composition root and lifecycle. OrbitDrop lives in the notification area; it has no main window.</summary>
+/// <summary>Composition root and lifecycle. Flickwheel lives in the notification area; it has no main window.</summary>
 public partial class App : Application, ISettingsHost, ITrayCommands
 {
     private readonly AppPaths _paths = new();
@@ -133,7 +133,7 @@ public partial class App : Application, ISettingsHost, ITrayCommands
         _settings = _store.Load();
         Log.Detailed = _settings.DetailedLogging;
         OrbitDrop.Windows.Diagnostics.Sink = Log.Info;
-        Log.Info($"OrbitDrop {VersionText} starting | {Environment.OSVersion} | .NET {Environment.Version}");
+        Log.Info($"Flickwheel {VersionText} starting | {Environment.OSVersion} | .NET {Environment.Version}");
 
         DispatcherUnhandledException += (_, ex) =>
         {
@@ -177,8 +177,11 @@ public partial class App : Application, ISettingsHost, ITrayCommands
 
         _updates = new UpdateManager(_toasts, () => _settings, Update, () => _instance?.ReleaseOwnership(), Quit, IsInUse);
         _updates.Changed += () => _settingsVm?.RefreshUpdates();
-        if (!AppPackage.IsPackaged) _updates.Start(); // GitHub version: our own updater
-        else StartStoreUpdates();                      // Store version: install Store updates as soon as idle
+        // Flickwheel: the automatic background update check is intentionally disabled until the
+        // release pipeline is verified, so the app makes no network calls on its own. The manual
+        // "Check for updates" button in Settings still works, and it targets Flickwheel's own
+        // repository (b3n3d1ck/orbitdrop) — never the upstream OrbitDrop releases.
+        // if (!AppPackage.IsPackaged) _updates.Start(); // re-enable once Flickwheel releases exist
 
         ApplyHotkey();
         ApplyContextMenu();
@@ -188,11 +191,11 @@ public partial class App : Application, ISettingsHost, ITrayCommands
         bool updated = args.Contains("--updated");
         bool background = args.Contains("--background") || updated || AppPackage.LaunchedAtSignIn;
         if (updated)
-            _toasts.ShowMessage(ToastKind.Success, "OrbitDrop updated", $"You're now on version {UpdateManager.Current}. Your settings were kept.", ScreenInfo.CursorPosition);
+            _toasts.ShowMessage(ToastKind.Success, "Flickwheel updated", $"You're now on version {UpdateManager.Current}. Your settings were kept.", ScreenInfo.CursorPosition);
         else if (!_settings.OnboardingCompleted && !background) ShowOnboarding();
         else if (!background)
-            _toasts.ShowMessage(ToastKind.Info, "OrbitDrop is running",
-                $"Drag files and tap {TriggerKeyName}. Find OrbitDrop in the notification area.", ScreenInfo.CursorPosition);
+            _toasts.ShowMessage(ToastKind.Info, "Flickwheel is running",
+                $"Drag files and tap {TriggerKeyName}. Find Flickwheel in the notification area.", ScreenInfo.CursorPosition);
 
         Log.Info("Ready");
     }
@@ -211,7 +214,7 @@ public partial class App : Application, ISettingsHost, ITrayCommands
         Shell = _shell,
     };
 
-    private string TrayTooltip => Paused ? "OrbitDrop (paused)" : $"OrbitDrop · drag files and tap {TriggerKeyName}";
+    private string TrayTooltip => Paused ? "Flickwheel (paused)" : $"Flickwheel · drag files and tap {TriggerKeyName}";
 
     private void ApplyAppearance()
     {
@@ -382,17 +385,17 @@ public partial class App : Application, ISettingsHost, ITrayCommands
     {
         get
         {
-            if (AppPackage.IsPackaged) return $"You have version {UpdateManager.Current}. The Microsoft Store keeps OrbitDrop up to date.";
+            if (AppPackage.IsPackaged) return $"You have version {UpdateManager.Current}. The Microsoft Store keeps Flickwheel up to date.";
             if (_updates is null) return "";
             string last = _settings.LastUpdateCheck is { } t ? $" · checked {Ago(t)}" : "";
             return _updates.State switch
             {
                 UpdateState.Checking => "Checking GitHub for a newer version…",
                 UpdateState.Ready when _updates.Available is { } r =>
-                    $"OrbitDrop {r.Version} is downloaded and installs by itself the next time you're not using OrbitDrop.",
+                    $"Flickwheel {r.Version} is downloaded and installs by itself the next time you're not using OrbitDrop.",
                 UpdateState.Available or UpdateState.Downloading or UpdateState.Installing when _updates.Available is { } r =>
-                    UpdateManager.IsInstalled ? $"OrbitDrop {r.Version} is available. Installing takes a few seconds and keeps your settings."
-                                              : $"OrbitDrop {r.Version} is available. This is the portable copy, so download it from GitHub.",
+                    UpdateManager.IsInstalled ? $"Flickwheel {r.Version} is available. Installing takes a few seconds and keeps your settings."
+                                              : $"Flickwheel {r.Version} is available. This is the portable copy, so download it from GitHub.",
                 UpdateState.Failed => $"{_updates.Error}{last}",
                 _ when _settings.LastUpdateCheck is null => $"You have version {UpdateManager.Current}. Not checked yet.",
                 _ => $"You're up to date (version {UpdateManager.Current}){last}",
@@ -429,13 +432,13 @@ public partial class App : Application, ISettingsHost, ITrayCommands
     public bool UpdateAvailable => _updates?.Available is not null;
 
     public string UpdateMenuText => _updates?.Available is { } r
-        ? $"{(UpdateManager.IsInstalled ? "Install" : "Download")} OrbitDrop {r.Version}"
+        ? $"{(UpdateManager.IsInstalled ? "Install" : "Download")} Flickwheel {r.Version}"
         : "Check for updates";
 
     public void UpdateMenuClicked() => UpdateButtonClicked();
 
     /// <summary>
-    /// OrbitDrop is in use: the wheel is open, something is converting, or one of its windows (Settings, editor,
+    /// Flickwheel is in use: the wheel is open, something is converting, or one of its windows (Settings, editor,
     /// guide, Float shelf, a picker…) is open. Automatic updates wait for none of these to be true.
     /// </summary>
     private bool IsInUse()

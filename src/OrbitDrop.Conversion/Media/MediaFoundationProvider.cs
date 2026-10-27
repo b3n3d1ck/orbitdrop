@@ -280,7 +280,7 @@ public sealed class MediaFoundationProvider : IOperationProvider
     /// </summary>
     private static async Task<FileOutcome> NormalizeAsync(string file, OperationContext context, CancellationToken ct)
     {
-        string scratch = Path.Combine(Path.GetTempPath(), "OrbitDrop", Guid.NewGuid().ToString("N"));
+        string scratch = Path.Combine(Path.GetTempPath(), "Flickwheel", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(scratch);
         try
         {

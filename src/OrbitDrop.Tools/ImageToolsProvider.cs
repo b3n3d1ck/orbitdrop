@@ -109,7 +109,7 @@ public sealed class ImageToolsProvider : IOperationProvider, IEstimatesSize
                     progress.Report(new FileOutcome(file, OutcomeStatus.Failed, Message: ImageConversionProvider.Friendly(ex)));
                 }
             }
-        }, "OrbitDrop image tools");
+        }, "Flickwheel image tools");
     }
 
     private static FileOutcome Apply(string file, Transform tool, OperationContext context, CancellationToken ct)

@@ -9,8 +9,8 @@ namespace OrbitDrop.UI;
 /// Applies Light / Dark / System live, without restarting:
 /// <list type="bullet">
 /// <item>WPF Fluent <c>ThemeMode</c> for native controls, title bars and Mica (API marked experimental: isolated here);</item>
-/// <item>OrbitDrop token dictionaries (Tokens.Light/Dark.xaml), swapped in place, so every DynamicResource updates;</item>
-/// <item>optional Windows accent, with a contrast guard that falls back to the OrbitDrop monochrome accent.</item>
+/// <item>Flickwheel token dictionaries (Tokens.Light/Dark.xaml), swapped in place, so every DynamicResource updates;</item>
+/// <item>optional Windows accent, with a contrast guard that falls back to the Flickwheel monochrome accent.</item>
 /// </list>
 /// </summary>
 public sealed class ThemeManager

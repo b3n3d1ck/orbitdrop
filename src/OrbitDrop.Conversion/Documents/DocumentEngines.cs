@@ -10,7 +10,7 @@ public enum DocumentKind { Text, Sheet, Slides, Drawing, Pdf }
 /// <summary>
 /// The apps that do the actual conversion, found on this PC: Microsoft Word, Excel and PowerPoint (driven through COM,
 /// invisibly, files opened read-only) and LibreOffice (headless, with its own private profile); Office is preferred for
-/// its own formats. CorelDRAW drawings need neither: OrbitDrop reads them itself (<see cref="CorelDraw"/>). Results go
+/// its own formats. CorelDRAW drawings need neither: Flickwheel reads them itself (<see cref="CorelDraw"/>). Results go
 /// to a private temp folder that is deleted on <see cref="Dispose"/>; the provider copies them to their place with SafeOutput.
 /// </summary>
 public sealed class DocumentEngines : IDisposable
@@ -35,7 +35,7 @@ public sealed class DocumentEngines : IDisposable
     private static readonly AppFinder LibreOffice = new(() => FindApp("soffice.exe", @"LibreOffice\program\soffice.exe", @"scoop\apps\libreoffice\current\LibreOffice\program\soffice.exe"));
     /// <summary>
     /// Finds an app and remembers it. While it isn't there, looks again every 15 seconds, so an app installed while
-    /// OrbitDrop is running is picked up without a restart.
+    /// Flickwheel is running is picked up without a restart.
     /// </summary>
     private sealed class AppFinder(Func<string?> find)
     {
@@ -79,7 +79,7 @@ public sealed class DocumentEngines : IDisposable
 
     // Short names all the way down: a long file name inside a deep temp folder passes Windows' 260-character path
     // limit, which LibreOffice and Office can't write to. The real name is only used for the final result.
-    private readonly string _temp = Path.Combine(Path.GetTempPath(), "OrbitDrop", "docs", Guid.NewGuid().ToString("N")[..8]);
+    private readonly string _temp = Path.Combine(Path.GetTempPath(), "Flickwheel", "docs", Guid.NewGuid().ToString("N")[..8]);
     private int _jobs;
 
     /// <summary>A fresh, short-named folder inside this conversion's private temp folder (deleted with it).</summary>
@@ -109,11 +109,11 @@ public sealed class DocumentEngines : IDisposable
             _ => null,
         };
         if (office is not null)
-            await StaWorker.RunAsync(() => ConvertWithOffice(office, kind, input, output), "OrbitDrop Office");
+            await StaWorker.RunAsync(() => ConvertWithOffice(office, kind, input, output), "Flickwheel Office");
         else if (kind != DocumentKind.Drawing && LibreOffice.Value is { } soffice)
         {
             // A profile of its own: works while the user has LibreOffice open, and never touches their settings.
-            string profile = new Uri(Path.Combine(Path.GetTempPath(), "OrbitDrop", "libreoffice-profile")).AbsoluteUri;
+            string profile = new Uri(Path.Combine(Path.GetTempPath(), "Flickwheel", "libreoffice-profile")).AbsoluteUri;
             string[] import = kind == DocumentKind.Pdf ? ["--infilter=writer_pdf_import"] : []; // open a PDF in Writer, not Draw
             await RunAsync(soffice, ["--headless", "--norestore", "--nologo", "--nodefault", "--nolockcheck", $"-env:UserInstallation={profile}",
                 .. import, "--convert-to", LibreOfficeFilter(extension), "--outdir", dir, input], ct);

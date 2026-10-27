@@ -535,7 +535,7 @@ public sealed class InteractionController : IDropSink, IDisposable
                         foreach (var estimator in estimators)
                         {
                             var found = new List<(string, long)>();
-                            await OrbitDrop.Conversion.StaWorker.RunAsync(() => found.AddRange(estimator.EstimateSizes(file, context)), "OrbitDrop estimate");
+                            await OrbitDrop.Conversion.StaWorker.RunAsync(() => found.AddRange(estimator.EstimateSizes(file, context)), "Flickwheel estimate");
                             foreach (var (id, bytes) in found) perFile[id] = bytes;
                         }
                         lock (EstimateCache) { if (EstimateCache.Count > 32) EstimateCache.Clear(); EstimateCache[key] = perFile; }

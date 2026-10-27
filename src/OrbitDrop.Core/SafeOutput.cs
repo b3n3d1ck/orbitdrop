@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 namespace OrbitDrop.Core;
 
 /// <summary>
-/// File-integrity guarantees for every output OrbitDrop writes:
+/// File-integrity guarantees for every output Flickwheel writes:
 /// <list type="bullet">
 /// <item>the original is never opened for writing;</item>
 /// <item>output is written to a hidden temp file in the destination folder, then validated;</item>

@@ -14,13 +14,13 @@ public interface ITrayCommands
     void OpenSettings(string? page = null);
     void ShowOnboarding();
     void Quit();
-    /// <summary>"Check for updates", or "Install OrbitDrop x.y.z" once a newer release is known.</summary>
+    /// <summary>"Check for updates", or "Install Flickwheel x.y.z" once a newer release is known.</summary>
     string UpdateMenuText => "Check for updates";
     bool UpdateAvailable => false;
     void UpdateMenuClicked() { }
 }
 
-/// <summary>Notification-area menu in the OrbitDrop design language. Closes when it loses focus or on Esc.</summary>
+/// <summary>Notification-area menu in the Flickwheel design language. Closes when it loses focus or on Esc.</summary>
 public partial class TrayFlyout : Window
 {
     private readonly ITrayCommands _commands;

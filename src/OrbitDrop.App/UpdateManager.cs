@@ -10,11 +10,11 @@ namespace OrbitDrop.App;
 public enum UpdateState { Idle, Checking, UpToDate, Available, Downloading, Ready, Installing, Failed }
 
 /// <summary>
-/// Finds, downloads and installs new OrbitDrop releases.
+/// Finds, downloads and installs new Flickwheel releases.
 /// <list type="bullet">
 /// <item>Automatic checks run every few hours while "Check for updates automatically" is on; manual checks always run.</item>
 /// <item>With "Install updates automatically" on, an update found by an automatic check is downloaded quietly,
-/// verified, and installed the next time OrbitDrop is idle (no wheel, no jobs, no OrbitDrop windows). Otherwise the
+/// verified, and installed the next time Flickwheel is idle (no wheel, no jobs, no Flickwheel windows). Otherwise the
 /// user gets a card with an Install button.</item>
 /// <item>Installed copies update in place via the silent installer, which relaunches OrbitDrop; portable copies open
 /// the release page instead.</item>
@@ -37,7 +37,7 @@ public sealed class UpdateManager
     private string? _notified;
     private string? _downloaded; // verified installer waiting for an idle moment
 
-    /// <param name="busy">True while OrbitDrop is in use (wheel open, jobs running, windows open); automatic installs wait.</param>
+    /// <param name="busy">True while Flickwheel is in use (wheel open, jobs running, windows open); automatic installs wait.</param>
     public UpdateManager(ToastManager toasts, Func<AppSettings> settings, Action<Action<AppSettings>> update,
         Action releaseInstance, Action quit, Func<bool> busy)
     {
@@ -58,7 +58,7 @@ public sealed class UpdateManager
 
     public static SemVersion Current => UpdateService.Current;
 
-    /// <summary>Installed by OrbitDrop-Setup (the uninstaller sits next to the exe) rather than unzipped.</summary>
+    /// <summary>Installed by Flickwheel-Setup (the uninstaller sits next to the exe) rather than unzipped.</summary>
     public static bool IsInstalled => File.Exists(Path.Combine(AppContext.BaseDirectory, "unins000.exe"));
 
     /// <summary>First automatic check shortly after start-up (so it never slows launch), then hourly "is it due?" ticks.</summary>
@@ -101,7 +101,7 @@ public sealed class UpdateManager
 
             if (release is null)
             {
-                if (manual) _toasts.ShowMessage(ToastKind.Success, "You're up to date", $"OrbitDrop {Current} is the latest version.", ScreenInfo.CursorPosition);
+                if (manual) _toasts.ShowMessage(ToastKind.Success, "You're up to date", $"Flickwheel {Current} is the latest version.", ScreenInfo.CursorPosition);
             }
             else if (!manual && AutoInstall) await DownloadInBackgroundAsync(release);
             else if (manual || _notified != release.Tag)
@@ -122,9 +122,9 @@ public sealed class UpdateManager
     private void OfferUpdate(ReleaseInfo release)
     {
         string detail = IsInstalled
-            ? "Takes a few seconds. OrbitDrop restarts and keeps your settings."
+            ? "Takes a few seconds. Flickwheel restarts and keeps your settings."
             : "This is the portable copy: download the new version from GitHub.";
-        _toasts.ShowAction(ToastKind.Info, $"OrbitDrop {release.Version} is available", detail,
+        _toasts.ShowAction(ToastKind.Info, $"Flickwheel {release.Version} is available", detail,
             IsInstalled ? "Install" : "Download", () => _ = InstallAsync(), ScreenInfo.CursorPosition, TimeSpan.FromSeconds(20));
     }
 
@@ -138,7 +138,7 @@ public sealed class UpdateManager
         {
             _downloaded = await _service.DownloadAsync(release);
             Set(UpdateState.Ready);
-            Log.Info($"Update {release.Version} downloaded and verified; installing when OrbitDrop is idle");
+            Log.Info($"Update {release.Version} downloaded and verified; installing when Flickwheel is idle");
             TryInstallWhenIdle();
         }
         catch (Exception ex)
@@ -151,7 +151,7 @@ public sealed class UpdateManager
         }
     }
 
-    /// <summary>Installs the waiting update now if OrbitDrop isn't in use; otherwise looks again shortly.</summary>
+    /// <summary>Installs the waiting update now if Flickwheel isn't in use; otherwise looks again shortly.</summary>
     private void TryInstallWhenIdle()
     {
         if (State != UpdateState.Ready || _downloaded is null || Available is null) { _idleWait.Stop(); return; }
@@ -183,8 +183,8 @@ public sealed class UpdateManager
         }
 
         Set(UpdateState.Downloading);
-        toast.SetRunning($"Downloading OrbitDrop {release.Version}", "Verifying as it arrives", 0, indeterminate: true);
-        var progress = new Progress<double>(f => toast.SetRunning($"Downloading OrbitDrop {release.Version}", $"{f:P0}", f, indeterminate: false));
+        toast.SetRunning($"Downloading Flickwheel {release.Version}", "Verifying as it arrives", 0, indeterminate: true);
+        var progress = new Progress<double>(f => toast.SetRunning($"Downloading Flickwheel {release.Version}", $"{f:P0}", f, indeterminate: false));
         string setup;
         try
         {
@@ -204,14 +204,14 @@ public sealed class UpdateManager
     private async void RunInstaller(ReleaseInfo release, string setup, ToastWindow toast)
     {
         Set(UpdateState.Installing);
-        toast.SetRunning($"Updating OrbitDrop to {release.Version}", "OrbitDrop will reopen in a moment", 1, indeterminate: true);
+        toast.SetRunning($"Updating Flickwheel to {release.Version}", "Flickwheel will reopen in a moment", 1, indeterminate: true);
         Log.Info($"Installing update {release.Version} from {setup}");
         // The installer refuses to run while the single-instance mutex is held (Inno AppMutex), so let go of it first.
         _releaseInstance();
         try
         {
-            // /RELAUNCH=1 makes the installer start the new OrbitDrop once it has finished (see OrbitDrop.iss). Its own
-            // log goes next to OrbitDrop's, so a failed update can always be explained.
+            // /RELAUNCH=1 makes the installer start the new Flickwheel once it has finished (see OrbitDrop.iss). Its own
+            // log goes next to Flickwheel's, so a failed update can always be explained.
             string setupLog = Path.Combine(Log.Folder ?? Path.GetTempPath(), $"setup-{release.Version}.log");
             Process.Start(new ProcessStartInfo(setup, $"/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /CLOSEAPPLICATIONS /RELAUNCH=1 \"/LOG={setupLog}\"")
             {
@@ -240,8 +240,8 @@ public sealed class UpdateManager
     private static string Plain(Exception ex) => ex switch
     {
         // A status code means GitHub answered: it's busy or limiting requests, not that the PC is offline.
-        System.Net.Http.HttpRequestException { StatusCode: not null } => "GitHub didn't answer the update check just now. OrbitDrop will try again later.",
-        System.Net.Http.HttpRequestException or TaskCanceledException => "OrbitDrop couldn't reach GitHub. Check your connection and try again.",
+        System.Net.Http.HttpRequestException { StatusCode: not null } => "GitHub didn't answer the update check just now. Flickwheel will try again later.",
+        System.Net.Http.HttpRequestException or TaskCanceledException => "Flickwheel couldn't reach GitHub. Check your connection and try again.",
         _ => ex.Message,
     };
 

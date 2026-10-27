@@ -30,7 +30,7 @@ public static class PdfImageWriter
         Begin(2);
         Raw($"<< /Type /Pages /Count {images.Count} /Kids [{string.Join(" ", images.Select((_, k) => $"{PageId(k)} 0 R"))}] >>\nendobj\n");
         Begin(3);
-        Raw($"<< /Producer (OrbitDrop){(title is null ? "" : $" /Title ({Escape(title)})")} >>\nendobj\n");
+        Raw($"<< /Producer (Flickwheel){(title is null ? "" : $" /Title ({Escape(title)})")} >>\nendobj\n");
 
         for (int k = 0; k < images.Count; k++)
         {

@@ -300,8 +300,8 @@ internal static class UiReview
         public bool AccentFallbackActive => false;
         public IEnumerable<(string Category, string Detail)> Capabilities => registry.Providers.SelectMany(p => p.DescribeCapabilities());
         public string VersionText => "Version 0.1.0-alpha (design review)";
-        public string SettingsPath => @"C:\Users\You\AppData\Roaming\OrbitDrop\settings.json";
-        public string LogsPath => @"C:\Users\You\AppData\Local\OrbitDrop\logs";
+        public string SettingsPath => @"C:\Users\You\AppData\Roaming\Flickwheel\settings.json";
+        public string LogsPath => @"C:\Users\You\AppData\Local\Flickwheel\logs";
         public string? LicensePath => "LICENSE.txt";
         public void PreviewWheel() { }
         public void ShowOnboarding() { }

@@ -66,7 +66,7 @@ public sealed class ImageConversionProvider : IOperationProvider, IEstimatesSize
                     progress.Report(new FileOutcome(file, OutcomeStatus.Failed, Message: Friendly(ex)));
                 }
             }
-        }, "OrbitDrop image conversion");
+        }, "Flickwheel image conversion");
     }
 
     private static bool IsJpeg(ImageFormat? f) => f == WicImageCodec.Jpg || f == WicImageCodec.Jfif;

@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:OrbitDrop.UI.Settings"
-        Title="OrbitDrop Settings" Width="880" Height="620" MinWidth="720" MinHeight="480"
+        Title="Flickwheel Settings" Width="880" Height="620" MinWidth="720" MinHeight="480"
         WindowStartupLocation="CenterScreen" UseLayoutRounding="True"
         Icon="pack://application:,,,/OrbitDrop.UI;component/Assets/orbitdrop.ico"
         FontFamily="{StaticResource Orbit.Font.Text}">
@@ -35,7 +35,7 @@
         <DockPanel Margin="12,16,8,16">
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,0,0,20">
                 <Image Source="pack://application:,,,/OrbitDrop.UI;component/Assets/orbitdrop-64.png" Width="28" Height="28" />
-                <TextBlock Text="OrbitDrop" Style="{StaticResource Orbit.Text.BodyStrong}" FontSize="15" Margin="10,0,0,0" VerticalAlignment="Center" />
+                <TextBlock Text="Flickwheel" Style="{StaticResource Orbit.Text.BodyStrong}" FontSize="15" Margin="10,0,0,0" VerticalAlignment="Center" />
             </StackPanel>
             <ListBox x:Name="Nav" BorderThickness="0" Background="Transparent" SelectionChanged="OnNavChanged"
                      ItemContainerStyle="{StaticResource Orbit.NavItem}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -83,7 +83,7 @@
                             <CheckBox DockPanel.Dock="Right" Style="{StaticResource Orbit.ToggleSwitch}" IsChecked="{Binding LaunchAtStartup}" AutomationProperties.Name="Launch at Windows sign-in" />
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="Launch at Windows sign-in" Style="{StaticResource RowTitle}" />
-                                <TextBlock Text="OrbitDrop starts quietly in the notification area, ready when you drag a file." Style="{StaticResource RowHint}" />
+                                <TextBlock Text="Flickwheel starts quietly in the notification area, ready when you drag a file." Style="{StaticResource RowHint}" />
                             </StackPanel>
                         </DockPanel>
                     </Border>
@@ -123,7 +123,7 @@
                             <TextBlock Style="{StaticResource RowGlyph}" Text="&#xE897;" />
                             <Button DockPanel.Dock="Right" Content="Open guide" Style="{StaticResource Orbit.Button.Standard}" Command="{Binding ShowOnboardingCommand}" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="How to use OrbitDrop" Style="{StaticResource RowTitle}" />
+                                <TextBlock Text="How to use Flickwheel" Style="{StaticResource RowTitle}" />
                                 <TextBlock Text="An animated walkthrough of every gesture, with a practice run on a sample photo." Style="{StaticResource RowHint}" />
                             </StackPanel>
                         </DockPanel>
@@ -133,7 +133,7 @@
                             <TextBlock Style="{StaticResource RowGlyph}" Text="&#xE734;" />
                             <Button DockPanel.Dock="Right" Content="{Binding RateButtonText}" Style="{StaticResource Orbit.Button.Standard}" Command="{Binding RateCommand}" VerticalAlignment="Center" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Enjoying OrbitDrop?" Style="{StaticResource RowTitle}" />
+                                <TextBlock Text="Enjoying Flickwheel?" Style="{StaticResource RowTitle}" />
                                 <TextBlock Text="{Binding RateHint}" Style="{StaticResource RowHint}" />
                             </StackPanel>
                         </DockPanel>
@@ -146,7 +146,7 @@
                     <Border Style="{StaticResource Orbit.Card}" Padding="16,14,16,16">
                         <StackPanel>
                             <TextBlock Text="Theme" Style="{StaticResource RowTitle}" />
-                            <TextBlock Text="Changes apply instantly to every OrbitDrop surface." Style="{StaticResource RowHint}" Margin="0,2,0,14" />
+                            <TextBlock Text="Changes apply instantly to every Flickwheel surface." Style="{StaticResource RowHint}" Margin="0,2,0,14" />
                             <StackPanel Orientation="Horizontal">
                                 <RadioButton Style="{StaticResource Orbit.ThemeCard}" Tag="System" GroupName="Theme" IsChecked="{Binding ThemeSystem}" AutomationProperties.Name="System theme">
                                     <Grid Height="72">
@@ -183,7 +183,7 @@
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="Use Windows accent colour" Style="{StaticResource RowTitle}" />
                                 <TextBlock Text="Highlight wheel options with your system accent instead of black and white." Style="{StaticResource RowHint}" />
-                                <TextBlock Text="Your accent colour is too close to the wheel's surface to read clearly, so OrbitDrop's black and white is used instead."
+                                <TextBlock Text="Your accent colour is too close to the wheel's surface to read clearly, so Flickwheel's black and white is used instead."
                                            Style="{StaticResource RowHint}" Foreground="{DynamicResource Orbit.Warning}"
                                            Visibility="{Binding AccentFallbackVisible, Converter={StaticResource BoolToVis}}" />
                             </StackPanel>
@@ -479,23 +479,14 @@
                         <DockPanel>
                             <Image DockPanel.Dock="Left" Source="pack://application:,,,/OrbitDrop.UI;component/Assets/orbitdrop-256.png" Width="72" Height="72" Margin="0,0,20,0" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="OrbitDrop" Style="{StaticResource Orbit.Text.Title}" />
+                                <TextBlock Text="Flickwheel" Style="{StaticResource Orbit.Text.Title}" />
                                 <TextBlock Text="Your files. Your flow." Style="{StaticResource Orbit.Text.Body}" Foreground="{DynamicResource Orbit.TextSecondary}" />
                                 <TextBlock Text="{Binding VersionText}" Style="{StaticResource Orbit.Text.Caption}" Margin="0,6,0,0" />
                             </StackPanel>
                         </DockPanel>
                     </Border>
-                    <!-- The GitHub version: move to the Store version in one go (it installs first, then this one goes) -->
-                    <Border Style="{StaticResource Orbit.Card}">
-                        <DockPanel>
-                            <TextBlock Style="{StaticResource RowGlyph}" Text="&#xE719;" />
-                            <Button DockPanel.Dock="Right" Content="Switch" Style="{StaticResource Orbit.Button.Accent}" VerticalAlignment="Center" MinWidth="96" Click="OnSwitchToStore" />
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Switch to the Microsoft Store version" Style="{StaticResource RowTitle}" />
-                                <TextBlock Text="Updates that install themselves, no security warning, and the Premium tools one click away. Your settings come with you." Style="{StaticResource RowHint}" TextWrapping="Wrap" />
-                            </StackPanel>
-                        </DockPanel>
-                    </Border>
+                    <!-- Flickwheel has no Microsoft Store version, so the upstream "Switch to the Store version"
+                         row (which would install the original OrbitDrop Store app) is intentionally removed. -->
                     <Border Style="{StaticResource Orbit.Card}">
                         <DockPanel>
                             <TextBlock Style="{StaticResource RowGlyph}" Text="&#xE895;" />
@@ -513,7 +504,7 @@
                             <CheckBox DockPanel.Dock="Right" Style="{StaticResource Orbit.ToggleSwitch}" IsChecked="{Binding CheckForUpdates}" AutomationProperties.Name="Check for updates automatically" />
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="Check for updates automatically" Style="{StaticResource RowTitle}" />
-                                <TextBlock Text="Every few hours, OrbitDrop asks GitHub whether a newer version exists. Nothing about you or your files is sent." Style="{StaticResource RowHint}" />
+                                <TextBlock Text="Every few hours, Flickwheel asks GitHub whether a newer version exists. Nothing about you or your files is sent." Style="{StaticResource RowHint}" />
                             </StackPanel>
                         </DockPanel>
                     </Border>
@@ -532,7 +523,7 @@
                             <TextBlock Style="{StaticResource RowGlyph}" Text="&#xE72E;" />
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="Private by design" Style="{StaticResource RowTitle}" />
-                                <TextBlock Text="Everything runs on this PC. OrbitDrop never uploads files, needs no account, and collects no telemetry. The only network request is the update check above." Style="{StaticResource RowHint}" />
+                                <TextBlock Text="Everything runs on this PC. Flickwheel never uploads files, needs no account, and collects no telemetry. The only network request is the update check above." Style="{StaticResource RowHint}" />
                             </StackPanel>
                         </DockPanel>
                     </Border>

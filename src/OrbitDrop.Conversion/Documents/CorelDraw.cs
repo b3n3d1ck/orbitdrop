@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace OrbitDrop.Conversion.Documents;
 
 /// <summary>
-/// CorelDRAW drawings (.cdr, and Corel's exchange format .cmx), read by OrbitDrop's own reader, OrbitDropCdr.exe
+/// CorelDRAW drawings (.cdr, and Corel's exchange format .cmx), read by Flickwheel's own reader, OrbitDropCdr.exe
 /// (src/OrbitDrop.CdrReader: libcdr, the reader Inkscape and LibreOffice use). Nothing else needs to be installed.
 /// The reader runs as a separate process with a time limit, so a damaged or hostile file can only fail its own
 /// conversion: it can't crash or freeze OrbitDrop.
@@ -24,7 +24,7 @@ public static class CorelDraw
     /// </summary>
     public static async Task<IReadOnlyList<string>> ToSvgPagesAsync(string file, string workFolder, CancellationToken ct)
     {
-        if (!Available) throw new NotSupportedException("OrbitDrop's CorelDRAW reader is missing. Reinstalling OrbitDrop brings it back.");
+        if (!Available) throw new NotSupportedException("Flickwheel's CorelDRAW reader is missing. Reinstalling Flickwheel brings it back.");
         Directory.CreateDirectory(workFolder);
         string input = Path.Combine(workFolder, "drawing" + Path.GetExtension(file).ToLowerInvariant());
         File.Copy(file, input, overwrite: true);
@@ -33,7 +33,7 @@ public static class CorelDraw
         start.ArgumentList.Add(input);
         start.ArgumentList.Add(workFolder);
         using var process = Process.Start(start) ?? throw new IOException("The CorelDRAW reader didn't start.");
-        using var job = Limits.Apply(process); // at most 2 GB of memory, and it ends if OrbitDrop does
+        using var job = Limits.Apply(process); // at most 2 GB of memory, and it ends if Flickwheel does
         var stdout = process.StandardOutput.ReadToEndAsync(ct);
         var stderr = process.StandardError.ReadToEndAsync(ct);
         using var limit = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -51,7 +51,7 @@ public static class CorelDraw
         switch (process.ExitCode)
         {
             case 0: break;
-            case 2: throw new InvalidDataException("This drawing is from a CorelDRAW version OrbitDrop can't read yet, or it's password-protected.");
+            case 2: throw new InvalidDataException("This drawing is from a CorelDRAW version Flickwheel can't read yet, or it's password-protected.");
             case 3: throw new InvalidDataException("The drawing couldn't be read. It may be damaged.");
             default: throw new IOException("The CorelDRAW reader couldn't open the file" + (stderr.Result.Trim() is { Length: > 0 } e ? ": " + e : "."));
         }
@@ -61,7 +61,7 @@ public static class CorelDraw
         return pages;
     }
 
-    /// <summary>A Windows job object around the reader: a memory ceiling, and it's killed if OrbitDrop closes.</summary>
+    /// <summary>A Windows job object around the reader: a memory ceiling, and it's killed if Flickwheel closes.</summary>
     private sealed class Limits : IDisposable
     {
         private const long MaxMemory = 2L * 1024 * 1024 * 1024;

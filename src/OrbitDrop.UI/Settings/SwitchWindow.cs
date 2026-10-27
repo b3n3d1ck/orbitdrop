@@ -18,8 +18,8 @@ public sealed class SwitchWindow : Window
     private CancellationTokenSource? _cancel;
 
     /// <param name="install">Installs the Store version (0–1 progress); true once it's on the PC.</param>
-    /// <param name="handOver">Closes this OrbitDrop, removes it and opens the Store version.</param>
-    /// <param name="openStorePage">OrbitDrop's page in the Microsoft Store app (the way when installing here isn't possible).</param>
+    /// <param name="handOver">Closes this Flickwheel, removes it and opens the Store version.</param>
+    /// <param name="openStorePage">Flickwheel's page in the Microsoft Store app (the way when installing here isn't possible).</param>
     /// <param name="portable">The portable version: nothing to uninstall, its folder can be deleted.</param>
     public SwitchWindow(Func<IProgress<double>, CancellationToken, Task<(bool, string)>> install, Action handOver, Action openStorePage, bool portable)
     {
@@ -50,7 +50,7 @@ public sealed class SwitchWindow : Window
             var bar = _body.Children.OfType<ProgressBar>().First();
             bar.IsIndeterminate = false;
             bar.Value = progress;
-            ((TextBlock)_body.Children[1]).Text = $"Getting OrbitDrop from the Store… {progress:P0}";
+            ((TextBlock)_body.Children[1]).Text = $"Getting Flickwheel from the Store… {progress:P0}";
         }
     }
 
@@ -58,7 +58,7 @@ public sealed class SwitchWindow : Window
     {
         _body.Children.Clear();
         _body.Children.Add(Heading("Switch to the Microsoft Store version?"));
-        _body.Children.Add(Paragraph("The same OrbitDrop, with:"));
+        _body.Children.Add(Paragraph("The same Flickwheel, with:"));
         foreach (var point in new[]
         {
             "Updates that install themselves, through the Store",
@@ -68,8 +68,8 @@ public sealed class SwitchWindow : Window
         })
             _body.Children.Add(Paragraph("✓  " + point, 0, 4));
         _body.Children.Add(Paragraph(portable
-            ? "OrbitDrop installs the Store version, then opens it. You can delete this portable folder afterwards."
-            : "OrbitDrop installs the Store version first, and only when it's there removes this one and opens it. If anything goes wrong, you keep the version you have.", 14, 0, secondary: true));
+            ? "Flickwheel installs the Store version, then opens it. You can delete this portable folder afterwards."
+            : "Flickwheel installs the Store version first, and only when it's there removes this one and opens it. If anything goes wrong, you keep the version you have.", 14, 0, secondary: true));
         var buttons = Row();
         buttons.Children.Add(Button("Switch now", accent: true, () => _ = InstallAsync()));
         buttons.Children.Add(Button("Not now", accent: false, Close));
@@ -80,7 +80,7 @@ public sealed class SwitchWindow : Window
     {
         _body.Children.Clear();
         _body.Children.Add(Heading("Installing from the Microsoft Store…"));
-        var status = Paragraph("Getting OrbitDrop from the Store. This takes a minute or two.");
+        var status = Paragraph("Getting Flickwheel from the Store. This takes a minute or two.");
         _body.Children.Add(status);
         var bar = new ProgressBar { Height = 6, Margin = new Thickness(0, 16, 0, 0), IsIndeterminate = true, Maximum = 1 };
         _body.Children.Add(bar);
@@ -88,7 +88,7 @@ public sealed class SwitchWindow : Window
         buttons.Children.Add(Button("Cancel", accent: false, () => { _cancel?.Cancel(); Close(); }));
         _body.Children.Add(buttons);
         _cancel = new CancellationTokenSource();
-        var progress = new Progress<double>(p => { bar.IsIndeterminate = false; bar.Value = p; status.Text = $"Getting OrbitDrop from the Store… {p:P0}"; });
+        var progress = new Progress<double>(p => { bar.IsIndeterminate = false; bar.Value = p; status.Text = $"Getting Flickwheel from the Store… {p:P0}"; });
         (bool ok, string detail) result;
         try { result = await _install(progress, _cancel.Token); }
         catch (OperationCanceledException) { return; }
@@ -101,7 +101,7 @@ public sealed class SwitchWindow : Window
     {
         _body.Children.Clear();
         _body.Children.Add(Heading("The Store version is installed 🎉"));
-        _body.Children.Add(Paragraph("OrbitDrop now closes, removes this version and opens the Store one, with your settings. It takes a few seconds."));
+        _body.Children.Add(Paragraph("Flickwheel now closes, removes this version and opens the Store one, with your settings. It takes a few seconds."));
         var buttons = Row();
         buttons.Children.Add(Button("Continue", accent: true, () => { _handOver(); Close(); }));
         _body.Children.Add(buttons);

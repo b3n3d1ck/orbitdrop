@@ -1,5 +1,5 @@
 <!--
-  OrbitDrop control styles. Theme-independent: every colour is a DynamicResource token, so a theme switch
+  Flickwheel control styles. Theme-independent: every colour is a DynamicResource token, so a theme switch
   restyles open windows instantly. Spacing follows the 4 px grid; radii: controls 4, cards 6, surfaces 8.
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

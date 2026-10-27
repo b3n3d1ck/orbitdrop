@@ -6,8 +6,8 @@ namespace OrbitDrop.Windows.Shell;
 /// </summary>
 public sealed class SingleInstance : IDisposable
 {
-    public const string MutexName = "OrbitDrop.Running";
-    private const string ActivateEventName = "OrbitDrop.Activate";
+    public const string MutexName = "Flickwheel.Running";
+    private const string ActivateEventName = "Flickwheel.Activate";
 
     private readonly Mutex _mutex;
     private readonly EventWaitHandle? _activate;

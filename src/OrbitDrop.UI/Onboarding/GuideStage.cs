@@ -11,7 +11,7 @@ namespace OrbitDrop.UI.Onboarding;
 public enum GuideScene { Hero, Drag, Release, Modes, Groups, Keyboard, Customize }
 
 /// <summary>
-/// The guide's animated demonstrations: a little desktop with a Pictures window, a pointer, the real OrbitDrop
+/// The guide's animated demonstrations: a little desktop with a Pictures window, a pointer, the real Flickwheel
 /// wheel and notification (rendered by the app), and the keys being pressed. Every scene is a pure function of time
 /// (<see cref="Apply"/>), so it plays live in the guide and exports frame-exact GIFs for the README.
 /// </summary>

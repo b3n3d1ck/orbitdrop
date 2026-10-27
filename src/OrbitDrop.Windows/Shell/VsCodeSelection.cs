@@ -7,7 +7,7 @@ namespace OrbitDrop.Windows.Shell;
 /// <summary>
 /// The files selected in VS Code (and editors built on it: Cursor, Windsurf, VSCodium) for Ctrl+Alt+Space. VS Code
 /// doesn't share its selection with other apps, but its own "Copy Path" command (Shift+Alt+C on Windows) copies the
-/// full paths of the items selected in its Explorer, or of the open file when an editor has focus. OrbitDrop presses
+/// full paths of the items selected in its Explorer, or of the open file when an editor has focus. Flickwheel presses
 /// it, reads the paths, and puts the clipboard back exactly as it was.
 /// </summary>
 public static class VsCodeSelection
@@ -29,7 +29,7 @@ public static class VsCodeSelection
 
     /// <summary>
     /// The selected items' paths, or empty if VS Code didn't copy any. <paramref name="clipboardOwner"/> is one of
-    /// OrbitDrop's own windows (Windows needs an owner to put the saved clipboard back). Runs on the UI thread.
+    /// Flickwheel's own windows (Windows needs an owner to put the saved clipboard back). Runs on the UI thread.
     /// </summary>
     public static async Task<IReadOnlyList<string>> ReadAsync(IntPtr clipboardOwner)
     {

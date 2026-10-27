@@ -13,7 +13,7 @@ public enum OperationMode { Convert, Tools, Actions }
 /// <param name="ProgressTitle">Toast title while running ("Converting to PNG").</param>
 /// <param name="NeedsInput">The app asks for choices first (a window or picker) and passes them as <see cref="OperationContext.Input"/>.</param>
 /// <param name="DoneTitle">Toast title when an action finishes ("Copied to Desktop"); defaults to the label.</param>
-/// <param name="RequiresLicense">Part of the paid OrbitDrop license: only offered once the app is unlocked.</param>
+/// <param name="RequiresLicense">Part of the paid Flickwheel license: only offered once the app is unlocked.</param>
 public sealed record OperationDescriptor(
     string Id,
     string ProviderId,

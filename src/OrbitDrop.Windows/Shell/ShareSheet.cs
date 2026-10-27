@@ -9,7 +9,7 @@ namespace OrbitDrop.Windows.Shell;
 
 /// <summary>
 /// The Windows share window (Nearby Share, Mail, Phone Link, apps …) for desktop apps, via IDataTransferManagerInterop.
-/// It needs a window to anchor to; OrbitDrop has none on screen, so a tiny invisible one is opened at the pointer.
+/// It needs a window to anchor to; Flickwheel has none on screen, so a tiny invisible one is opened at the pointer.
 /// </summary>
 public static class ShareSheet
 {
@@ -28,7 +28,7 @@ public static class ShareSheet
         var host = new Window
         {
             Width = 1, Height = 1, WindowStyle = WindowStyle.None, ResizeMode = ResizeMode.NoResize, ShowInTaskbar = false,
-            AllowsTransparency = true, Background = System.Windows.Media.Brushes.Transparent, Topmost = true, Title = "OrbitDrop Share",
+            AllowsTransparency = true, Background = System.Windows.Media.Brushes.Transparent, Topmost = true, Title = "Flickwheel Share",
         };
         host.Show();
         IntPtr hwnd = new WindowInteropHelper(host).Handle;
@@ -50,7 +50,7 @@ public static class ShareSheet
                     else if (Directory.Exists(p)) items.Add(await StorageFolder.GetFolderFromPathAsync(p));
                 }
                 e.Request.Data.Properties.Title = paths.Count == 1 ? Path.GetFileName(paths[0]) : $"{paths.Count} items";
-                e.Request.Data.Properties.Description = "Shared from OrbitDrop";
+                e.Request.Data.Properties.Description = "Shared from Flickwheel";
                 e.Request.Data.SetStorageItems(items);
             }
             catch (Exception ex)

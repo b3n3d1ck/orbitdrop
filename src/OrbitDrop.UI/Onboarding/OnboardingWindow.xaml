@@ -1,7 +1,7 @@
 <Window x:Class="OrbitDrop.UI.Onboarding.OnboardingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="How to use OrbitDrop" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Title="How to use Flickwheel" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" UseLayoutRounding="True"
         Icon="pack://application:,,,/OrbitDrop.UI;component/Assets/orbitdrop.ico"
         Background="{DynamicResource Orbit.SurfaceBase}"

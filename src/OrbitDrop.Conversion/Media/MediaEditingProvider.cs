@@ -87,7 +87,7 @@ public sealed class MediaEditingProvider : IOperationProvider
             var frame = BitmapDecoder.Create(ms, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad).Frames[0];
             BitmapSource image = new FormatConvertedBitmap(frame, PixelFormats.Bgra32, null, 0);
             output = WicImageCodec.WriteOutput(image, file, WicImageCodec.Png, $"frame {Stamp(at)}", context, ct);
-        }, "OrbitDrop snapshot");
+        }, "Flickwheel snapshot");
         return output;
     }
 
@@ -140,7 +140,7 @@ public sealed class MediaEditingProvider : IOperationProvider
             using var output = new MemoryStream();
             encoder.Save(output);
             gif = GifLoop.AddTimingAndLoop(output.ToArray(), 100 / GifFps);
-        }, "OrbitDrop GIF");
+        }, "Flickwheel GIF");
 
         return SafeOutput.Write(file, context.Output, ".gif", null, s => s.Write(gif),
             temp => File.ReadAllBytes(temp) is var b && b.Length > 6 && b[0] == 'G' && b[1] == 'I' && b[2] == 'F' ? null : "the GIF is invalid", ct);

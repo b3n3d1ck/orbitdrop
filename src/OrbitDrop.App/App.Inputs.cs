@@ -78,7 +78,7 @@ public partial class App
     /// <summary>A folder picker in front of everything; the chosen folder becomes the job's input.</summary>
     private Task<(bool, object?)> AskFolderAsync(string verb, FileSet files)
     {
-        // An invisible, activated owner makes the dialog open in front (OrbitDrop has no window of its own).
+        // An invisible, activated owner makes the dialog open in front (Flickwheel has no window of its own).
         var owner = new Window
         {
             Width = 0, Height = 0, WindowStyle = WindowStyle.None, ShowInTaskbar = false, ShowActivated = true,
@@ -163,7 +163,7 @@ public partial class App
         _interaction?.OpenForSelection(new FileSet(files));
     }
 
-    /// <summary>"OrbitDrop" in File Explorer's right-click menu (Settings → Shortcuts): registered or removed to match.</summary>
+    /// <summary>"Flickwheel" in File Explorer's right-click menu (Settings → Shortcuts): registered or removed to match.</summary>
     private void ApplyContextMenu()
     {
         string version = $"{UpdateManager.Current.Major}.{UpdateManager.Current.Minor}.{UpdateManager.Current.Patch}";
@@ -194,7 +194,7 @@ public partial class App
     }
 
     /// <summary>
-    /// Shows a window centred on the screen and brings it forward. OrbitDrop runs in the background, so Windows
+    /// Shows a window centred on the screen and brings it forward. Flickwheel runs in the background, so Windows
     /// may otherwise open it behind File Explorer.
     /// </summary>
     private static void ShowInFront(Window window)

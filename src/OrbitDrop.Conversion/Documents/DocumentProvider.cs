@@ -8,7 +8,7 @@ namespace OrbitDrop.Conversion.Documents;
 /// <summary>
 /// Documents (Word, Excel, PowerPoint, OpenDocument) to PDF, old formats to the current ones, and PDF to Word, through
 /// the Microsoft Office or LibreOffice already on this PC (see <see cref="DocumentEngines"/>). CorelDRAW drawings to
-/// SVG, PDF and images with OrbitDrop's own reader (see <see cref="CorelDraw"/>): nothing to install for those.
+/// SVG, PDF and images with Flickwheel's own reader (see <see cref="CorelDraw"/>): nothing to install for those.
 /// </summary>
 public sealed class DocumentProvider : IOperationProvider
 {
@@ -120,7 +120,7 @@ public sealed class DocumentProvider : IOperationProvider
                     images.Add(WicImageCodec.EncodeToBytes(image, Rendered[target], context.JpegQuality));
                 context.ReportFileFraction?.Invoke((i + 1.0) / pages.Count);
             }
-        }, "OrbitDrop CorelDRAW");
+        }, "Flickwheel CorelDRAW");
 
         if (target == Pdf)
             return SafeOutput.Write(file, context.Output, ".pdf", null,
